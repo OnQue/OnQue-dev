@@ -26,10 +26,12 @@ TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = []
 
+#User model
+AUTH_PROFILE_MODULE = 'clients.UserProfile'
+
 
 # Application definition
 
-INSTALLED_APPS = DEFAULT_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
 DEFAULT_APPS = (
     'django.contrib.admin',
@@ -48,8 +50,14 @@ THIRD_PARTY_APPS = (
 
 #list all the custom build apps
 LOCAL_APPS = (
-
+    'tables',
+    'clients',
+    'users',
     )
+
+
+INSTALLED_APPS = DEFAULT_APPS + THIRD_PARTY_APPS + LOCAL_APPS
+
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -95,9 +103,14 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = 'static'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "clients/static"),
+    os.path.join(BASE_DIR, "users/static"),
+
+]
 
 #Templates settings
 TEMPLATE_DIRS = (
-    os.path.join(BASE_DIR, "templates")
+    os.path.join(BASE_DIR, "templates"),
 )
 
