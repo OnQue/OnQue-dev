@@ -45,14 +45,13 @@ DEFAULT_APPS = (
 
 #List all the third party apps used in the project
 THIRD_PARTY_APPS = (
-
+    'tastypie',
     )
 
 #list all the custom build apps
 LOCAL_APPS = (
-    'tables',
     'clients',
-    'users',
+    'guests',
     )
 
 
@@ -105,7 +104,7 @@ STATIC_URL = '/static/'
 STATIC_ROOT = 'static'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "clients/static"),
-    os.path.join(BASE_DIR, "users/static"),
+    os.path.join(BASE_DIR, "guests/static"),
 
 ]
 
@@ -113,4 +112,6 @@ STATICFILES_DIRS = [
 TEMPLATE_DIRS = (
     os.path.join(BASE_DIR, "templates"),
 )
+
+csrf_value = '6x3Be4X2EIo31PMq6I1OQC2KbFejrS3y'
 
