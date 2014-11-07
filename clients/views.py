@@ -82,17 +82,21 @@ def logout(request):
     # return render(request, 'clients/login.html', {'msg':_MSG_CODES['slo']})
 
 def register(request):
-    if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            new_user = form.save()
-            return HttpResponseRedirect('/login?msg=%s' %_MSG_CODES['rsl'])
-            # return render(request,'clients/login.html',{'msg':'Registered Successfully Please Log in now'})
-    else:
-        form = UserCreationForm()
-    return render(request, "clients/register.html", {
-        'form': form,
-    })
+	if request.user.is_superuser:
+	    if request.method == 'POST':
+	        form = UserCreationForm(request.POST)
+	        if form.is_valid():
+	            new_user = form.save()
+	            return HttpResponseRedirect('/login?msg=%s' %_MSG_CODES['rsl'])
+	            # return render(request,'clients/login.html',{'msg':'Registered Successfully Please Log in now'})
+	    else:
+	        form = UserCreationForm()
+	    return render(request, "clients/register.html", {
+	        'form': form,
+	    })
+	else:
+		return HttpResponse('Unauthorized', status=401)
+
 
 
 def loggedin(request):
