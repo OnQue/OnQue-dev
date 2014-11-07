@@ -1,7 +1,7 @@
 {% extends "clients/base.html" %}
 
 {% block title %}
-    <title>OnQueue - Checkout</title>
+    <title>OnQueue - Add a group</title>
 {% endblock %}
 
     
@@ -16,7 +16,6 @@
     <link href="/static/css/style.css" rel="stylesheet">
     <link href="/static/css/style-responsive.css" rel="stylesheet">
     {% endblock %}
-
     {% block head_scripts %}
 
      <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
@@ -24,21 +23,20 @@
     <script type="text/javascript">
 
 
-function loadStatus() {
+function loadTable() {
     var req = new XMLHttpRequest();
     req.onload = function(e) {
         var raw_data = JSON.parse(req.response);
-        console.log(raw_data);
+        // console.log(raw_data);
         
-        console.log(typeof(raw_data));   
+        // console.log(typeof(raw_data));   
         
-        booked = raw_data['booked']
         free = raw_data['free']
        
-        for (n in booked){
-            $('#booked_option').append($('<option>', {
-            value: booked[n],
-            text: booked[n]
+        for (n in free){
+            $('#table').append($('<option>', {
+            value: free[n],
+            text: free[n]
         }));
 
         }
@@ -49,16 +47,55 @@ function loadStatus() {
     req.send();
 }
 
+function loadGuest() {
+    var req = new XMLHttpRequest();
+    req.onload = function(e) {
+        var raw_data = JSON.parse(req.response);
+        // console.log(raw_data);
+        
+        // console.log(typeof(raw_data));   
+        
+        objects = raw_data['objects']
+        for (i in objects){
+          var status=objects[i]['status'];
+          console.log(typeof(status));
+          console.log(status);
+          if(status==1){
+              $('#guest').append($('<option>', {
+            value: objects[i]['mobile'],
+            text: objects[i]['mobile']
+        }));
+
+          }
+        }
+        // console.log(objects);
+       
+        // for (n in free){
+        //     $('#guest').append($('<option>', {
+        //     value: free[n],
+        //     text: free[n]
+        // }));
+
+        // }
+
+
+    }
+    req.open('get', '/api/v1/guest/?format=json',true);
+    req.send();
+}
 
 
 
-loadStatus();
+
+loadTable();
+loadGuest();
 
     </script>
 
     
 
     {% endblock %}
+
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
@@ -81,7 +118,9 @@ loadStatus();
       MAIN SIDEBAR MENU
       *********************************************************************************************************************************************************** -->
       <!--sidebar start-->
-      {% include "clients/_sidebar.html" %}
+      
+      
+      
       <!--sidebar end-->
       
       <!-- **********************************************************************************************************************************************************
@@ -90,27 +129,29 @@ loadStatus();
       <!--main content start-->
       <section id="main-content">
           <section class="wrapper site-min-height">
-          	<h3><i class="fa fa-angle-right"></i> Checkout</h3>
-          	<div class="row mt">
-          		<div class="col-lg-12">
+            <h3><i class="fa fa-angle-right"></i> Seat a customer</h3>
+            <div class="row mt">
+              <div class="col-lg-12">
 
 
 
 
 
               
-          		<form action="/checkout/" method="post">
-                <input type='hidden' name='csrfmiddlewaretoken' value='{{ csrf_token }}' />
-                <p>Checkout table No:<select id='booked_option' name='checkout_table'> 
-                    
+              <p>Place your content here.</p>
+                        <form action="/seated/" method="post">
+                          <input type='hidden' name='csrfmiddlewaretoken' value='{{ csrf_token }}' />
+                          <p>Choose Guest:<select id='guest' name='guest_num'> 
+                          </select></p>
+                          <p>Choose Table no:<select id='table' name='table_num'> 
+                          </select></p>
+                          <input type="submit" value="save">
+                        </form>
 
-                </select></p>
-                <input type="submit" value="save">
-              </form>
-          		</div>
-          	</div>
-			
-		</section><! --/wrapper -->
+              </div>
+            </div>
+      
+    </section><! --/wrapper -->
       </section><!-- /MAIN CONTENT -->
 
       <!--main content end-->

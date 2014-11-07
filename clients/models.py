@@ -24,9 +24,12 @@ from jsonfield import JSONField
 
 
 class table(models.Model):
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User,primary_key=True)
     n_of_table = models.IntegerField(default=0)
     status = JSONField()
+    waiting_list = JSONField(default={'waiting_list':[]},null=True)
+    seated = JSONField(default={'seated':[]},null=True)
+    # rest_name = models.CharField(editable=False,default=user.username)
     
 
 

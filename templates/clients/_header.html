@@ -3,7 +3,7 @@
                   <div class="fa fa-bars tooltips" data-placement="right" data-original-title="Toggle Navigation"></div>
               </div>
             <!--logo start-->
-            <a href="index.html" class="logo"><b>DASHGUM FREE</b></a>
+            <a href="/" class="logo"><b>DASHGUM FREE</b></a>
             <!--logo end-->
             <div class="nav notify-row" id="top_menu">
                 <!--  notification start -->
@@ -141,13 +141,24 @@
                             </li>
                         </ul>
                     </li>
+                    <li id="header_inbox_bar" class="logout">
+                    <p> <a href="/add/">Add ||</a></p>
+                    </li>
+                    <li id="header_inbox_bar" class="logout">
+                    <p> <a href="/checkout/">Checkout  ||  </a></p>
+                    </li>
+                    <li id="header_inbox_bar" class="logout">
+                    <p> <a href="/seated/">Seated</a></p>
+                    </li>
                     <!-- inbox dropdown end -->
                 </ul>
                 <!--  notification end -->
             </div>
             <div class="top-menu">
                 <ul class="nav pull-right top-menu">
+                    <li><a class="logout" href="#">{{user.get_username}}</a></li>
                     <li><a class="logout" href="/logout/">Logout</a></li>
                 </ul>
+                    
             </div>
         </header>

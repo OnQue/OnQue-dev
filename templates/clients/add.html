@@ -39,7 +39,9 @@
       MAIN SIDEBAR MENU
       *********************************************************************************************************************************************************** -->
       <!--sidebar start-->
-      {% include "clients/_sidebar.html" %}
+      
+      
+      
       <!--sidebar end-->
       
       <!-- **********************************************************************************************************************************************************
@@ -58,8 +60,36 @@
 
               
           		<p>Place your content here.</p>
-              {{form}}
-          		</div>
+              {% if form.errors %}
+          <p class="error"> {{form.errors}} </p>
+        {% endif %}
+        {% if errors %}
+          {% for error in errors %}
+                <p class="error"> {{error}} </p>
+          {% endfor %}
+                
+        {% endif %}
+                <form action="" method="post"> 
+            <input type='hidden' name='csrfmiddlewaretoken' value='{{ csrf_token }}' />
+            <p><label for="id_n_of_table">Mobile No</label> <input id="mobile" name="mobile" type="number" value="" /></p>
+            <input type="submit" value="Add">
+          </form>
+            {% if waiting %}
+              <p>Guests in waiting list</p>
+                  {% for key,val in waiting.items %}
+                        {% if val < 10 %}
+                          <p style="color: red;"> {{key}},{{val}} </p>
+                        {% else %}
+
+                        <p>{{key}},{{val}}</p>
+                        {% endif%}
+                  {% endfor %}
+              {% endif %}
+              <input type="text" id="but1" />
+              
+
+            
+          	</div>
           	</div>
 			
 		</section><! --/wrapper -->
@@ -85,6 +115,22 @@
     <script src="/static/js/common-scripts.js"></script>
 
     <!--script for this page-->
+        <script> 
+
+function display(seconds,id){ 
+
+    if(seconds==0){
+      seconds = 30;
+    }
+    seconds-=1;
+    document.getElementById(id).value =seconds;
+    console.log("display("+seconds+","+"\""+id+"\""+")");
+    setTimeout("display("+seconds+","+"\""+id+"\""+")",1000) ;
+} 
+
+// display(50,"but1");
+</script> 
+
     
   <script>
       //custom select box
