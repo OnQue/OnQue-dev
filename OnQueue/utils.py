@@ -2,6 +2,9 @@ from guests.models import Guest
 from clients.models import table
 import datetime
 from math import floor
+from twill.commands import *
+
+
 def guest_exists(mobile):
     try:
         my_object = Guest.objects.get(mobile=mobile)
@@ -48,6 +51,7 @@ def get_waiting_detail(u):
     for mobile in mobiles:
         guest=Guest.objects.get(mobile=mobile)
         start_time = guest.start_time
+        print start_time,time_now()
         diff = (time_now() - start_time).total_seconds()
         rem = guest.waiting_time*60 - floor(diff)
         if(rem <=0):
@@ -55,6 +59,26 @@ def get_waiting_detail(u):
         else:
             retVal[mobile]=rem
     return retVal
+
+def sendSMS(number,message):
+        try:
+
+                go("http://www.indyarocks.com")
+                fv("1","LoginForm[username]",username)
+                fv("1","LoginForm[password]",password)
+                submit()
+        except:
+                print "Sorry this API needs updation, please report it under issues at https://github.com/mishravikas/pyIndyaSMS "
+        
+
+        try:
+                go("http://www.indyarocks.com/send-free-sms")
+                fv("3","FreeSms[mobile]",number)
+                fv("3","FreeSms[post_message]",message)
+                submit()
+                print "Successfully sent"
+        except:
+                print "Username and password did not match"
 
 
 

@@ -51,23 +51,38 @@ function loadGuest() {
     var req = new XMLHttpRequest();
     req.onload = function(e) {
         var raw_data = JSON.parse(req.response);
+        console.log(raw_data)
         // console.log(raw_data);
         
         // console.log(typeof(raw_data));   
         
-        objects = raw_data['objects']
-        for (i in objects){
-          var status=objects[i]['status'];
-          console.log(typeof(status));
-          console.log(status);
-          if(status==1){
-              $('#guest').append($('<option>', {
-            value: objects[i]['mobile'],
-            text: objects[i]['mobile']
-        }));
+        // objects = raw_data['objects']
+        // for (i in objects){
+        //   var status=objects[i]['status'];
+        //   console.log(typeof(status));
+        //   console.log(status);
+        //   if(status==1){
+        //       $('#guest').append($('<option>', {
+        //     value: objects[i]['mobile'],
+        //     text: objects[i]['mobile']
+        // }));
 
-          }
-        }
+        //   }
+        // }
+        waiting_list = raw_data['waiting_list'];
+        console.log(waiting_list);
+        console.log(typeof(waiting_list))
+        jh = JSON.parse(waiting_list.slice(0,1)+waiting_list.slice(3,15)+waiting_list.slice(16,-1))
+        console.log(typeof(jh))
+        console.log(jh)
+        // for (i in waiting_list){
+        //   console.log(waiting_list[i]);
+        //      $('#guest').append($('<option>', {
+        //     value: waiting_list[i],
+        //     text: objects[i]
+        // }));
+        // }
+
         // console.log(objects);
        
         // for (n in free){
@@ -80,7 +95,7 @@ function loadGuest() {
 
 
     }
-    req.open('get', '/api/v1/guest/?format=json',true);
+    req.open('get', '/api/v1/table/{{rest_name}}/?format=json',true);
     req.send();
 }
 
@@ -88,7 +103,7 @@ function loadGuest() {
 
 
 loadTable();
-loadGuest();
+// loadGuest();
 
     </script>
 
@@ -142,7 +157,13 @@ loadGuest();
                         <form action="/seated/" method="post">
                           <input type='hidden' name='csrfmiddlewaretoken' value='{{ csrf_token }}' />
                           <p>Choose Guest:<select id='guest' name='guest_num'> 
-                          </select></p>
+                          
+                          {% for mobile in waiting_list %}
+                          <option value="{{mobile}}">{{mobile}}</option>
+
+                          {% endfor %}
+                          </select> 
+                          </p>
                           <p>Choose Table no:<select id='table' name='table_num'> 
                           </select></p>
                           <input type="submit" value="save">

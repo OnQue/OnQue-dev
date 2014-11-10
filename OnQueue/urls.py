@@ -2,12 +2,13 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from tastypie.api import Api
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
-from OnQueue.api import GuestResource, TableResource, UserResource
+from OnQueue.api import GuestResource, TableResource, UserResource,RecordResource
 
 v1_api = Api(api_name='v1')
 v1_api.register(UserResource())
 v1_api.register(GuestResource())
 v1_api.register(TableResource())
+v1_api.register(RecordResource())
 
 urlpatterns = patterns('',
     # Examples:
@@ -27,6 +28,7 @@ urlpatterns = patterns('',
     url(r'^api/', include(v1_api.urls)),
     url(r'^seated/$', 'clients.views.seated'),
     url(r'^get_waiting_list_of_table/', 'clients.views.get_waiting_list_of_table'),
+    url(r'^analytics/$', 'clients.views.analytics'),    
 
 
 

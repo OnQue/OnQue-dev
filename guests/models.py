@@ -17,3 +17,8 @@ class Guest(models.Model):
     status = models.IntegerField(default=0)   #0-nothing 1-waitinglist 2-seated
     table_no = models.IntegerField(default=0)  #Table no in which he is seated
     current = models.CharField(default="null", max_length =32)  #Rest at which currently seated or waiting list
+
+class PersonalRecord(models.Model):
+    guest = models.ForeignKey(Guest)
+    restuarant = models.CharField(blank=True, max_length =32)
+    date = models.DateTimeField(auto_now_add=True, blank=False)

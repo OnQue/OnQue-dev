@@ -10,7 +10,7 @@ from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 import json
 from django.contrib.auth.models import User
-from OnQueue import utils
+from OnQueue import utils,signals
 from guests.models import Guest
 
 
@@ -29,8 +29,9 @@ def init_newuser_data(sender, **kwargs):
 	'''
 	user = kwargs.get('instance')
 	try:
+		rest_name = user.username+'_'+'name'
 		t, t_created = table.objects.get_or_create(user=user,
-            defaults={'user':user,'n_of_table':10,'status':{'free':[1,2,3,4,5,6,7,8,9,10],'booked':[]}})
+            defaults={'user':user,'rest_name':rest_name,'n_of_table':10,'status':{'free':[1,2,3,4,5,6,7,8,9,10],'booked':[]}})
 	except MultipleObjectsReturned:
 		pass
 
@@ -183,8 +184,10 @@ def checkout(request):
 					visited = g.restuarants['visited']
 					visited.append(restuarant)
 					g.restuarants={'visited':visited}
-					g.save(update_fields=['current','status','last_visited','restuarants']) 
+					g.save(update_fields=['current','status','last_visited','restuarants'])
+					signals.save_checkout(request.user,g.mobile,100) 
 			t.save(update_fields=['status','seated'])
+
 			return HttpResponseRedirect('/')
 
 		return render(request,'clients/checkout.html')
@@ -240,12 +243,13 @@ def add(request):
 					g.current = request.user.username
 					g.save(update_fields=['waiting_time','start_time','status','current'])
 				else:
-					g=Guest(mobile=mobile,created_at=utils.time_now(),status=1,current = request.user.username,waiting_time = 5)
+					g=Guest(mobile=mobile,created_at=utils.time_now(),start_time = utils.time_now(),status=1,current = request.user.username,waiting_time = 5)
 					g.save()
 					utils.send_link_to_register(mobile)
 				##Add user to the waiting list
 				u=User.objects.get(username=request.user.username)
 				utils.update_waiting_list(u,g)
+				signals.save_waiting(request.user,mobile)
 			else:
 				errors.append("%d already  in waiting list" %mobile)
 			print errors,"========ERROR================"
@@ -287,11 +291,16 @@ def seated(request):
 			g.table_no = table_num
 			g.status = 2
 			g.save(update_fields=['current','table_no','status'])
+			signals.save_seated(request.user,guest_num,table_num)
 			return HttpResponseRedirect('/')
-
-		return render(request,'clients/seated.html')
+			
+		waiting_list = utils.get_waiting_guests(request.user)
+		return render(request,'clients/seated.html',{'waiting_list':waiting_list})
 
 	return HttpResponseRedirect('/login?msg=%s' %_MSG_CODES['lap'])
+
+def analytics(request):
+	return render(request,'clients/analytics.html')
 	
 
 
