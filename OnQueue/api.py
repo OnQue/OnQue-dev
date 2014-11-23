@@ -25,6 +25,7 @@ class GuestResource(ModelResource):
     class Meta:
         queryset = Guest.objects.all()
         resource_name = 'guest'
+        excludes = ['last_visited']
         
 
 class TableResource(ModelResource):
@@ -44,7 +45,7 @@ class RecordResource(ModelResource):
     class Meta:
         queryset = Record.objects.all()
         resource_name = 'record'
-        
+
         
 
         
