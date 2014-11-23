@@ -29,6 +29,9 @@ urlpatterns = patterns('',
     url(r'^seated/$', 'clients.views.seated'),
     url(r'^get_waiting_list_of_table/', 'clients.views.get_waiting_list_of_table'),
     url(r'^analytics/$', 'clients.views.analytics'),    
+    url(r'^records/$', 'clients.views.ShowRecords'),
+    url(r'^JSON_records/$', 'clients.views.JSON_records'),
+    url(r'^permission_denied/$', 'clients.views.permission_denied'),    
 
 
 

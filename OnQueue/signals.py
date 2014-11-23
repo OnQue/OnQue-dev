@@ -9,7 +9,7 @@ def save_waiting(user,mobile):
     print "Save_waiting"
     guest = Guest.objects.get(mobile=mobile)
     rest_name = table.objects.get(user=user).rest_name
-    record = Record(user=user,rest_name=rest_name,date=time_now(),mobile=mobile,age=guest.age)
+    record = Record(user=user,rest_name=rest_name,date=time_now(),mobile=mobile,age=guest.age,name=guest.name)
     record.save()
     pr = PersonalRecord(guest=guest,restuarant=rest_name,date=time_now())
     pr.save() 

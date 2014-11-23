@@ -19,6 +19,7 @@ class Record(models.Model):
     rest_name = models.CharField(null=True,blank=True,max_length=32)
     date = models.DateTimeField(auto_now_add=True, blank=False)
     mobile = models.IntegerField(blank=False,max_length=10)
+    name = models.CharField(null=True,blank=True,max_length=32)
     age = models.IntegerField(blank=False,max_length=2)
     conversion = models.BooleanField(default=False)
     bill = models.IntegerField(blank=True,max_length=10,null=True)

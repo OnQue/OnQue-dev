@@ -3,6 +3,7 @@ from clients.models import table
 import datetime
 from math import floor
 from twill.commands import *
+from datetime import timedelta
 
 
 def guest_exists(mobile):
@@ -80,6 +81,25 @@ def sendSMS(number,message):
         except:
                 print "Username and password did not match"
 
+def previous_days(n):
+    l=[]
+    for i in range(0,n):
+        l.append(datetime.date.today()-timedelta(days=i))
+    return (l)
+
+def clean_dict_JSON(mydict):
+    for key in mydict.keys():
+        if type(key) is not str:
+            try:
+              mydict[str(key)] = mydict[key]
+            except:
+              try:
+                mydict[repr(key)] = mydict[key]
+              except:
+                pass
+        del mydict[key]
+
+    return mydict
 
 
 

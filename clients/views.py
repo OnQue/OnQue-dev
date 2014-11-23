@@ -5,13 +5,14 @@ from django.contrib.auth.forms import UserCreationForm
 from clients.forms import MyForm, AdminSettingsForm, AddGuestForm
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
-from clients.models import table
+from clients.models import table, Record
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 import json
 from django.contrib.auth.models import User
 from OnQueue import utils,signals
 from guests.models import Guest
+import datetime
 
 
 
@@ -300,8 +301,82 @@ def seated(request):
 	return HttpResponseRedirect('/login?msg=%s' %_MSG_CODES['lap'])
 
 def analytics(request):
-	return render(request,'clients/analytics.html')
+	dates=utils.previous_days(5)
+	records_converted=[]
+	for date in dates:
+		element = {}
+		element['year'] = str(date)
+		element['value'] = Record.objects.filter(user=request.user,conversion=True,date__startswith=date).count()
+		records_converted.append(element)
+	print "============================"
+	for i in records_converted:
+		print i
+	print "============================"
+
 	
+
+	return render(request,'clients/analytics.html',{'records_converted':records_converted})
+	
+
+def ShowRecords(request):
+	records_converted = Record.objects.filter(user=request.user,conversion=True)
+	records_total = Record.objects.filter(user=request.user)
+	return render(request,"clients/records.html",{'records_converted':records_converted,'records_total':records_total})
+
+def JSON_records(request):
+	'''
+	Using as an API for analytics page
+
+	'''
+	response={"response":'An error occured'}
+	if request.user.is_authenticated():
+		records = {}
+		dates=utils.previous_days(5)
+		#------------start records_converted
+		records_converted=[]
+		for date in dates:
+			element = {}
+			element['date'] = str(date)
+			element['count'] = Record.objects.filter(user=request.user,conversion=True,date__startswith=date).count()
+			records_converted.append(element)
+		#------end records_converted
+		records['records_converted'] = records_converted
+
+		#----start total records
+		records_total = []
+		for date in dates:
+			element = {}
+			element['date'] = str(date)
+			element['count'] = Record.objects.filter(user=request.user,date__startswith=date).count()
+			records_total.append(element)
+		#--- end total records
+
+		records['records_total'] = records_total
+	return HttpResponse(json.dumps(records), content_type="application/json")
+
+
+def permission_denied(request):
+	if request.user.is_authenticated():
+		a = request.META.get('HTTP_REFERER')
+		if a:
+			a = request.META['HTTP_REFERER']
+			if a.split('/')[3]=='records':
+				return render(request,"clients/permission_denied.html")
+			else:
+				return HttpResponseRedirect(request.META['HTTP_REFERER'])
+
+		else:
+			return HttpResponseRedirect('/')
+
+	return HttpResponseRedirect('/login?msg=%s' %_MSG_CODES['lap'])
+
+
+
+
+
+
+
+
 
 
 

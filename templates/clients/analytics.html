@@ -46,30 +46,30 @@
       MAIN CONTENT
       *********************************************************************************************************************************************************** -->
       <!--main content start-->
-      <section id="main-content">
+ <section id="main-content">
           <section class="wrapper site-min-height">
-          <h3><i class="fa fa-angle-right"></i> Morris Charts</h3>
+          <h3><i class="fa fa-angle-right"></i> Analytics Charts</h3>
               <!-- page start-->
               <div id="morris">
                   <div class="row mt">
                       <div class="col-lg-6">
                           <div class="content-panel">
-                              <h4><i class="fa fa-angle-right"></i> Chart Example 1</h4>
+                              <h4><i class="fa fa-angle-right"></i>Last 5 days conversions</h4>
                               <div class="panel-body">
-                                  <div id="myfirstchart" ></div>
+                                  <div id="hero-graph" class="graph"></div>
                               </div>
                           </div>
                       </div>
                       <div class="col-lg-6">
                           <div class="content-panel">
-                              <h4><i class="fa fa-angle-right"></i> Chart Example 2</h4>
+                              <h4><i class="fa fa-angle-right"></i>Total visitors for last 5 days </h4>
                               <div class="panel-body">
                                   <div id="hero-bar" class="graph"></div>
                               </div>
                           </div>
                       </div>
                   </div>
-                  <div class="row mt">
+            <!--       <div class="row mt">
                       <div class="col-lg-6">
                           <div class="content-panel">
                               <h4><i class="fa fa-angle-right"></i> Chart Example 3</h4>
@@ -86,7 +86,7 @@
                               </div>
                           </div>
                       </div>
-                  </div>
+                  </div> -->
               </div>
               <!-- page end-->
           </section>
@@ -94,14 +94,7 @@
 
       <!--main content end-->
       <!--footer start-->
-      <footer class="site-footer">
-          <div class="text-center">
-              2014 - Alvarez.is
-              <a href="morris.html#" class="go-top">
-                  <i class="fa fa-angle-up"></i>
-              </a>
-          </div>
-      </footer>
+      {% include "clients/_footer.html" %}
       <!--footer end-->
   </section>
 
@@ -119,30 +112,49 @@
     <script src="/static/js/common-scripts.js"></script>
 
     <!--script for this page-->
-    <script src="/static/js/morris-conf.js"></script>
     
-   <script>
-   new Morris.Line({
-  // ID of the element in which to draw the chart.
-  element: 'myfirstchart',
-  // Chart data records -- each entry in this array corresponds to a point on
-  // the chart.
-  data: [
-    { year: '2008', value: 20 },
-    { year: '2009', value: 10 },
-    { year: '2010', value: 5 },
-    { year: '2011', value: 5 },
-    { year: '2012', value: 20 }
-  ],
-  // The name of the data record attribute that contains x-values.
-  xkey: 'year',
-  // A list of names of data record attributes that contain y-values.
-  ykeys: ['value'],
-  // Labels for the ykeys -- will be displayed when you hover over the
-  // chart.
-  labels: ['Value']
-});
-   </script> 
+    
+<script>
+   function loadData() {
+    var req = new XMLHttpRequest();
+    req.onload = function(e) {
+        var raw_data = JSON.parse(req.response);
+        console.log(raw_data);
+        
+        console.log(typeof(raw_data));   
+        
+       var records_converted_data = raw_data['records_converted'];
+       var records_total_data = raw_data['records_total'];
+       Morris.Line({
+        element: 'hero-graph',
+        data: records_converted_data,
+        xkey: 'date',
+        ykeys: ['count'],
+        labels: ['Conversions'],
+        lineColors:['#ed5565']
+      });
+
+       Morris.Bar({
+        element: 'hero-bar',
+        data: records_total_data,
+        xkey: 'date',
+        ykeys: ['count'],
+        labels: ['Visitors'],
+        barRatio: 0.4,
+        xLabelAngle: 35,
+        hideHover: 'auto',
+        barColors: ['#ac92ec']
+      });
+
+
+    }
+    req.open('get', '/JSON_records/',true);
+    req.send();
+}
+
+loadData();
+
+</script> 
   <script>
       //custom select box
 
