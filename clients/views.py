@@ -13,6 +13,7 @@ from django.contrib.auth.models import User
 from OnQueue import utils,signals
 from guests.models import Guest
 import datetime
+import urllib2
 
 
 
@@ -188,7 +189,10 @@ def checkout(request):
 					g.save(update_fields=['current','status','last_visited','restuarants'])
 					signals.save_checkout(request.user,g.mobile,100) 
 			t.save(update_fields=['status','seated'])
-
+			a = request.META.get('HTTP_REFERER','')
+			print a,"-------------------"
+			if a.split('/')[3]=='front':
+				return HttpResponseRedirect('/front/')
 			return HttpResponseRedirect('/')
 
 		return render(request,'clients/checkout.html')
@@ -261,6 +265,53 @@ def add(request):
 	else:
 		return HttpResponseRedirect('/login?msg=%s' %_MSG_CODES['lap'])
 
+def adduser(request):
+	error = []
+	if  request.user.is_authenticated():
+		if request.method == 'POST':
+			mobile = int(request.POST.get('mobile', ''))
+			name = request.POST.get('name', '')
+			waitingtime = request.POST.get('waitingtime', '')
+			partysize = request.POST.get('partysize', '')
+			add_to_waiting = request.POST.get('add_to_waiting', '')
+			print mobile,name,waitingtime,partysize,add_to_waiting
+			waiting_list = utils.get_waiting_guests(request.user)
+			seated_list = utils.get_seated_guests(request.user)
+			if (not mobile in waiting_list) and (not mobile in seated_list):  #Check if he's not already in waiting list or seated
+				if utils.guest_exists(mobile):
+					g = Guest.objects.get(mobile=mobile)
+					g.waiting_time = waitingtime
+					g.start_time = utils.time_now()
+					g.status = 1  #Waiting list
+					g.current = request.user.username
+					g.save(update_fields=['waiting_time','start_time','status','current'])
+				else:
+					g=Guest(mobile=mobile,created_at=utils.time_now(),start_time = utils.time_now(),status=1,current = request.user.username,waiting_time = waitingtime,name=name)
+					g.save()
+					utils.send_link_to_register(mobile,name)
+				##Add user to the waiting list
+				u=User.objects.get(username=request.user.username)
+				utils.update_waiting_list(u,g)
+				signals.save_waiting(request.user,mobile,waitingtime)
+			elif (not mobile in waiting_list) and (mobile in seated_list):
+				error = "User already seated"
+			elif (not mobile in seated_list) and (mobile in waiting_list):
+				error = "User already in waiting list"
+			print "========ERROR================"
+			print error
+			print "============================="
+			if(len(error)!=0):
+				return HttpResponseRedirect('/front?error=%s' %(error))
+			else:
+				return HttpResponseRedirect('/front/')
+			
+		return HttpResponseRedirect('/front/')
+
+		# return render(request, 'clients/front.html')
+	else:
+		return HttpResponseRedirect('/login?msg=%s' %_MSG_CODES['lap'])
+
+
 def countdown(request):
 	time = 30
 	return render(request,'clients/countdown.html',{'time':time})
@@ -299,6 +350,48 @@ def seated(request):
 		return render(request,'clients/seated.html',{'waiting_list':waiting_list})
 
 	return HttpResponseRedirect('/login?msg=%s' %_MSG_CODES['lap'])
+
+def seatUser(request):
+	if  request.user.is_authenticated():
+		if request.method == 'POST':
+			mydict = request.POST
+			mobile = int(request.POST.get('mobile'))
+			print "-------sfhsigh---------"
+			tables = []
+			for key, value in mydict.iteritems():
+				if key.startswith('table'):
+					tables.append(int(value))
+			print tables
+			t=table.objects.get(user=request.user)
+			free = t.status['free']
+			booked = t.status['booked']
+			for tab in tables:
+				booked.append(tab)
+				free.remove(tab)
+			booked.sort()
+			free.sort()
+			seated = t.seated['seated']
+			waiting = t.waiting_list['waiting_list']
+			seated.append(mobile)
+			waiting.remove(mobile)
+			t.seated = {'seated':seated}
+			t.waiting_list = {'waiting_list':waiting}
+			t.status={"booked":booked,"free":free}
+			t.save(update_fields=['status','waiting_list','seated'])
+
+			g=Guest.objects.get(mobile=mobile)
+			g.current=request.user.username
+			g.table_no = tables[0]
+			g.status = 2
+			g.save(update_fields=['current','table_no','status'])
+			signals.save_seated(request.user,mobile,tables[0])
+
+
+
+			return HttpResponseRedirect('/front/')
+
+	return HttpResponseRedirect('/login?msg=%s' %_MSG_CODES['lap'])
+
 
 def analytics(request):
 	dates=utils.previous_days(5)
@@ -361,7 +454,8 @@ def permission_denied(request):
 		if a:
 			a = request.META['HTTP_REFERER']
 			if a.split('/')[3]=='records':
-				return render(request,"clients/permission_denied.html")
+				msg = 'We respect Our users privacy and if you are seeing this page it means he/she has not allowed us to make this info public.'
+				return render(request,"clients/permission_denied.html",{'msg':msg})
 			else:
 				return HttpResponseRedirect(request.META['HTTP_REFERER'])
 
@@ -369,6 +463,35 @@ def permission_denied(request):
 			return HttpResponseRedirect('/')
 
 	return HttpResponseRedirect('/login?msg=%s' %_MSG_CODES['lap'])
+
+def front(request):
+	if request.user.is_authenticated():
+		rest_name = table.objects.get(user=request.user).rest_name
+		response = urllib2.urlopen('http://localhost:8000/api/v1/table/%s/?format=json' %rest_name) 
+		waiting_list = json.load(response)
+		users = utils.get_user_details(waiting_list['waiting_list'])
+		
+		#--table checkout starts
+		t = table.objects.get(user=request.user)
+		checkout_table_nums = t.status['booked']
+		free_tables = t.status['free']
+		#--table checkout ends
+
+		return render(request,'clients/front.html',{'users':users,'checkout_table_nums':checkout_table_nums,'free_tables':free_tables})
+	return HttpResponseRedirect('/login?msg=%s' %_MSG_CODES['lap'])
+
+def sendsms(request):
+	if request.user.is_authenticated():
+		number = request.GET.get('number')
+		message = request.GET.get('message')
+		if number and message:
+			response = utils.send_sms(number,message)
+		else:
+			response = "Invalid Number or message"
+		return HttpResponse(response)
+	else:
+		return render(request,'clients/permission_denied.html',{'msg':'Not authorized'})
+
 
 
 

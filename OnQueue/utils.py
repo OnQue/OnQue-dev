@@ -4,6 +4,8 @@ import datetime
 from math import floor
 from twill.commands import *
 from datetime import timedelta
+import urllib2
+import json
 
 
 def guest_exists(mobile):
@@ -13,8 +15,9 @@ def guest_exists(mobile):
         return False
     return True
 
-def send_link_to_register(mobile):
-    print "Sent the link to register via sms to %s" %mobile
+def send_link_to_register(mobile,name):
+    message = "Hello %s welcome to OnQue, please go through the following link to complete your profile #" %name
+    send_sms(mobile,message)
 
 def time_now():
     return datetime.datetime.now()
@@ -61,25 +64,17 @@ def get_waiting_detail(u):
             retVal[mobile]=rem
     return retVal
 
-def sendSMS(number,message):
-        try:
-
-                go("http://www.indyarocks.com")
-                fv("1","LoginForm[username]",username)
-                fv("1","LoginForm[password]",password)
-                submit()
-        except:
-                print "Sorry this API needs updation, please report it under issues at https://github.com/mishravikas/pyIndyaSMS "
-        
-
-        try:
-                go("http://www.indyarocks.com/send-free-sms")
-                fv("3","FreeSms[mobile]",number)
-                fv("3","FreeSms[post_message]",message)
-                submit()
-                print "Successfully sent"
-        except:
-                print "Username and password did not match"
+def send_sms(number,message):
+    
+    print "==============SEND SMS=================="
+    print "Number: ",number
+    print "Message: ",message
+    print "========================================"
+    message=message.replace(' ','%20')
+    # url = "http://login.bulksms360.in:8080/sendsms/bulksms?username=exp1-onquee&password=123456&type=0&dlr=1&destination=%s&source=ONQUEE&message=%s" %(number,message)
+    # response = urllib2.urlopen(url)
+    return (1710)
+    # return (response.read().split('|')[0])
 
 def previous_days(n):
     l=[]
@@ -101,6 +96,33 @@ def clean_dict_JSON(mydict):
 
     return mydict
 
+def get_user_details(waiting_list):
+    # print waiting_list,"=================="
+    a= waiting_list
+    i = 0
+    num = a[a.find("[")+1:a.find("]")]
+    l= num.split(',')
+    print l,len(l),"=======ggsdgsg========="
+    users = []
+    if len(l)>=1 and l[0]!='':
+        for num in l:
+            user = {}
+            g=Guest.objects.get(mobile=int(num))
+            user['name'] = g.name
+            user['mobile'] = g.mobile
+            user['age'] = g.age
+            user['lastVisited']="Yesterday"
+            user['tablesReqd'] = 1
+            users.append(user)
+            i+=1
+
+    print users
+    return users
+
+
+
+
+    
 
 
 

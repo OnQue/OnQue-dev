@@ -31,7 +31,12 @@ urlpatterns = patterns('',
     url(r'^analytics/$', 'clients.views.analytics'),    
     url(r'^records/$', 'clients.views.ShowRecords'),
     url(r'^JSON_records/$', 'clients.views.JSON_records'),
-    url(r'^permission_denied/$', 'clients.views.permission_denied'),    
+    url(r'^permission_denied/$', 'clients.views.permission_denied'),
+    url(r'^front/$', 'clients.views.front'),
+    url(r'^sendsms/$', 'clients.views.sendsms'),
+    url(r'^adduser/$', 'clients.views.adduser'),
+    url(r'^seatUser/$', 'clients.views.seatUser'),
+    
 
 
 

@@ -3,9 +3,10 @@ from clients.models import table,Record
 import datetime
 from math import floor
 from OnQueue.utils import time_now
+from utils import send_sms
 
 
-def save_waiting(user,mobile):
+def save_waiting(user,mobile,waitingtime):
     print "Save_waiting"
     guest = Guest.objects.get(mobile=mobile)
     rest_name = table.objects.get(user=user).rest_name
@@ -13,6 +14,8 @@ def save_waiting(user,mobile):
     record.save()
     pr = PersonalRecord(guest=guest,restuarant=rest_name,date=time_now())
     pr.save() 
+    message="Hello %s, You have been added to wait list at %s and your waiting time is %s mins" %(guest.name,rest_name,str(waitingtime))
+    send_sms(mobile,message)
 
 
 def save_seated(user,mobile,table_num):
@@ -30,4 +33,7 @@ def save_checkout(user,mobile,bill):
     record.seated = False
     record.bill = bill
     record.save(update_fields=['seated','bill'])
+    message="Thank you for visiting %s, we would really appreciate if you could fill out the feedback form" %(record.rest_name)
+    send_sms(mobile,message)
+
 
