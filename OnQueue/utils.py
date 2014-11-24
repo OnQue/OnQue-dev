@@ -6,6 +6,7 @@ from twill.commands import *
 from datetime import timedelta
 import urllib2
 import json
+from django.conf import settings
 
 
 def guest_exists(mobile):
@@ -71,10 +72,12 @@ def send_sms(number,message):
     print "Message: ",message
     print "========================================"
     message=message.replace(' ','%20')
-    # url = "http://login.bulksms360.in:8080/sendsms/bulksms?username=exp1-onquee&password=123456&type=0&dlr=1&destination=%s&source=ONQUEE&message=%s" %(number,message)
-    # response = urllib2.urlopen(url)
-    return (1710)
-    # return (response.read().split('|')[0])
+    response = 17011
+    if settings.SEND_SMS:
+        url = "http://login.bulksms360.in:8080/sendsms/bulksms?username=exp1-onquee&password=123456&type=0&dlr=1&destination=%s&source=ONQUEE&message=%s" %(number,message)
+        response = urllib2.urlopen(url)
+        response = response.read().split('|')[0]
+    return (response)
 
 def previous_days(n):
     l=[]

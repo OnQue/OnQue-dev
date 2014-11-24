@@ -22,6 +22,8 @@ SECRET_KEY = '9$m6#aza)ictbav1r=tx%9!-g2j&9ea(gdt3*^a@fnz&l&0gd8'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+SEND_SMS = False
+
 TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = []
