@@ -26,6 +26,7 @@ class Record(models.Model):
     table_num = models.CharField(default='0',max_length =32)  #Table no in which he is seated
     waiting = models.BooleanField(default=True)
     seated = models.BooleanField(default=False)
+    directly_seated = models.BooleanField(default=False)
 
 class Feedback(models.Model):
     user = models.ForeignKey(User)

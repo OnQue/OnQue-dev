@@ -37,6 +37,8 @@ def init_newuser_data(sender, **kwargs):
 	except MultipleObjectsReturned:
 		pass
 
+def test_view(request):
+	return render(request,'clients/test_multi.html')
 
 def api(request):
 	response={"response":'An error occured'}
@@ -162,19 +164,23 @@ def waitlist(request):
 def checkout(request):
 	if  request.user.is_authenticated():
 		if request.method == 'POST':
+			print "============CHECKOUT STARTED==============="
+			print "Restuarant: ", request.user
 			t_n = int(request.POST.get('checkout_table'))
 			t=table.objects.get(user=request.user)
 			free = t.status['free']
 			booked = t.status['booked']
 			seated = t.seated['seated']
 
-			print "=======booked now: ", booked
+			print "Currently booked tables: ", booked
 
-			print "---t_n",t_n
+			print "Checkout requested: ",t_n
 			for guest in seated:
 				g=Guest.objects.get(mobile=guest)
-				print g.table_no,type(g.table_no),"--------->>>>>>>>>>>.",str(t_n)
+				print "------Seated guests--------"
+				print 'table_no: ',g.table_no
 				if str(t_n) in g.table_no:
+					print "MATCHED"
 					print g.table_no
 					seated.remove(guest)
 					tabs_seated = g.table_no.split(',')
@@ -199,8 +205,9 @@ def checkout(request):
 					g.save(update_fields=['current','status','last_visited','restuarants'])
 					signals.save_checkout(request.user,g.mobile,100) 
 					t.save(update_fields=['status','seated'])
+			print "-------------------------"
 			a = request.META.get('HTTP_REFERER','')
-			print a,"-------------------"
+			print '============CHECKOUT ENDED================='
 			if a.split('/')[3]=='front':
 				return HttpResponseRedirect('/front/')
 			return HttpResponseRedirect('/')
@@ -279,12 +286,16 @@ def adduser(request):
 	error = []
 	if  request.user.is_authenticated():
 		if request.method == 'POST':
+			seat = request.POST.get('seat', '')
+			if seat:#Visitor has to be seated directly
+				return seatDirectly(request)
 			mobile = int(request.POST.get('mobile', ''))
 			name = request.POST.get('name', '')
 			waitingtime = request.POST.get('waitingtime', '')
 			partysize = request.POST.get('partysize', '')
 			add_to_waiting = request.POST.get('add_to_waiting', '')
-			print mobile,name,waitingtime,partysize,add_to_waiting
+			print mobile,name,waitingtime,partysize,add_to_waiting,"-------------->>>>>>>"
+			
 			waiting_list = utils.get_waiting_guests(request.user)
 			seated_list = utils.get_seated_guests(request.user)
 			if (not mobile in waiting_list) and (not mobile in seated_list):  #Check if he's not already in waiting list or seated
@@ -322,6 +333,7 @@ def adduser(request):
 		return HttpResponseRedirect('/login?msg=%s' %_MSG_CODES['lap'])
 
 
+
 def countdown(request):
 	time = 30
 	return render(request,'clients/countdown.html',{'time':time})
@@ -352,8 +364,8 @@ def seated(request):
 			g.current=request.user.username
 			g.table_no = table_num
 			g.status = 2
-			g.save(update_fields=['current','table_no','status'])
 			signals.save_seated(request.user,guest_num,table_num)
+			g.save(update_fields=['current','table_no','status'])
 			return HttpResponseRedirect('/')
 			
 		waiting_list = utils.get_waiting_guests(request.user)
@@ -387,13 +399,12 @@ def seatUser(request):
 			t.seated = {'seated':seated}
 			t.waiting_list = {'waiting_list':waiting}
 			t.status={"booked":booked,"free":free}
-			t.save(update_fields=['status','waiting_list','seated'])
-
 			g=Guest.objects.get(mobile=mobile)
 			g.current=request.user.username
 			print "-----==========+++++++++++", str(tables)[1:-1]
 			g.table_no = str(tables)[1:-1]
 			g.status = 2
+			t.save(update_fields=['status','waiting_list','seated'])
 			g.save(update_fields=['current','table_no','status'])
 			signals.save_seated(request.user,mobile,tables)
 
@@ -402,6 +413,57 @@ def seatUser(request):
 			return HttpResponseRedirect('/front/')
 
 	return HttpResponseRedirect('/login?msg=%s' %_MSG_CODES['lap'])
+
+def seatDirectly(request):
+	print "============Reached seatDirectly=============="
+	mydict = request.POST
+	mobile = int(request.POST.get('mobile', ''))
+	name = request.POST.get('name', '')
+	waitingtime = request.POST.get('waitingtime', '')
+	partysize = request.POST.get('partysize', '')
+	tables = []
+	for key, value in mydict.iteritems():
+		if key.startswith('table'):
+			tables.append(int(value))
+	print 'tables selected by user: ',tables
+	if len(tables)==0:
+		return HttpResponseRedirect('/front/?error=Please select a table')
+	waiting_list = utils.get_waiting_guests(request.user)
+	seated_list = utils.get_seated_guests(request.user)
+	if (not mobile in waiting_list) and (not mobile in seated_list):  #Check if he's not already in waiting list or seated
+		if utils.guest_exists(mobile):
+			g = Guest.objects.get(mobile=mobile)
+			g.status = 2  #Seated
+			g.current = request.user.username
+			g.table_no = str(tables)[1:-1]
+			print "Saving direct user with: table_no: ", str(tables)[1:-1]
+			g.save(update_fields=['status','current','table_no'])
+			signals.save_seated(request.user,mobile,tables,1)
+		else:
+			print "Creating and Saving direct user with: table_no: ", 
+			g=Guest(mobile=mobile,created_at=utils.time_now(),status=2,current = request.user.username,name=name,table_no = str(tables)[1:-1])
+			g.save()
+			signals.save_seated(request.user,mobile,tables,1)
+			utils.send_link_to_register(mobile,name)
+	else:
+		return HttpResponseRedirect('/front/?error=%s' %'User already in waiting list or seated')
+
+	#Update table info
+	t=table.objects.get(user=request.user)
+	free = t.status['free']
+	booked = t.status['booked']
+	for tab in tables:
+		booked.append(tab)
+		free.remove(tab)
+	booked.sort()
+	free.sort()
+	seated = t.seated['seated']
+	seated.append(mobile)
+	t.seated = {'seated':seated}
+	t.status={"booked":booked,"free":free}
+	t.save(update_fields=['status','seated'])
+	print "===============FINISHED seatDirectly================="
+	return HttpResponseRedirect('/front/')
 
 
 def analytics(request):

@@ -13,6 +13,7 @@ v1_api.register(RecordResource())
 urlpatterns = patterns('',
     # Examples:
     url(r'^$', 'clients.views.dashboard',),
+    url(r'^test_view/$', 'clients.views.test_view',),
     url(r'^login/$', 'clients.views.login'),
     url(r'^logout/$', 'clients.views.logout'),
     url(r'^register/$', 'clients.views.register'),
