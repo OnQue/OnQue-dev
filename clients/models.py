@@ -23,7 +23,7 @@ class Record(models.Model):
     age = models.IntegerField(blank=False,max_length=2)
     conversion = models.BooleanField(default=False)
     bill = models.IntegerField(blank=True,max_length=10,null=True)
-    table_num = models.IntegerField(null=True,blank=True,max_length=10)
+    table_num = models.CharField(default='0',max_length =32)  #Table no in which he is seated
     waiting = models.BooleanField(default=True)
     seated = models.BooleanField(default=False)
 

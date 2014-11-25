@@ -166,20 +166,30 @@ def checkout(request):
 			t=table.objects.get(user=request.user)
 			free = t.status['free']
 			booked = t.status['booked']
-			booked.remove(int(t_n))
-			free.append(int(t_n))
-			booked.sort()
-			free.sort()
-			t.status={"booked":booked,"free":free}
 			seated = t.seated['seated']
-			
+
+			print "=======booked now: ", booked
+
+			print "---t_n",t_n
 			for guest in seated:
 				g=Guest.objects.get(mobile=guest)
-				if g.table_no ==t_n:
+				print g.table_no,type(g.table_no),"--------->>>>>>>>>>>.",str(t_n)
+				if str(t_n) in g.table_no:
+					print g.table_no
 					seated.remove(guest)
+					tabs_seated = g.table_no.split(',')
+					print tabs_seated
+					for i in tabs_seated:
+						print i
+						booked.remove(int(i))
+						free.append(int(i))
+					free.sort()
+					booked.sort()
+					print "============ booked after remove: ", booked
+					t.status={"booked":booked,"free":free}
 					g.current = "null"
 					g.status = 0
-					table_no = 0
+					table_no = '0'
 					restuarant = request.user.username
 					date = utils.time_now()
 					g.last_visited ={'restuarant':restuarant,'date':date}
@@ -188,7 +198,7 @@ def checkout(request):
 					g.restuarants={'visited':visited}
 					g.save(update_fields=['current','status','last_visited','restuarants'])
 					signals.save_checkout(request.user,g.mobile,100) 
-			t.save(update_fields=['status','seated'])
+					t.save(update_fields=['status','seated'])
 			a = request.META.get('HTTP_REFERER','')
 			print a,"-------------------"
 			if a.split('/')[3]=='front':
@@ -356,12 +366,12 @@ def seatUser(request):
 		if request.method == 'POST':
 			mydict = request.POST
 			mobile = int(request.POST.get('mobile'))
-			print "-------sfhsigh---------"
+			print "===============seatUser=================="
 			tables = []
 			for key, value in mydict.iteritems():
 				if key.startswith('table'):
 					tables.append(int(value))
-			print tables
+			print 'tables selected by user: ',tables
 			t=table.objects.get(user=request.user)
 			free = t.status['free']
 			booked = t.status['booked']
@@ -381,10 +391,11 @@ def seatUser(request):
 
 			g=Guest.objects.get(mobile=mobile)
 			g.current=request.user.username
-			g.table_no = tables[0]
+			print "-----==========+++++++++++", str(tables)[1:-1]
+			g.table_no = str(tables)[1:-1]
 			g.status = 2
 			g.save(update_fields=['current','table_no','status'])
-			signals.save_seated(request.user,mobile,tables[0])
+			signals.save_seated(request.user,mobile,tables)
 
 
 

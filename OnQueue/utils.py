@@ -105,7 +105,6 @@ def get_user_details(waiting_list):
     i = 0
     num = a[a.find("[")+1:a.find("]")]
     l= num.split(',')
-    print l,len(l),"=======ggsdgsg========="
     users = []
     if len(l)>=1 and l[0]!='':
         for num in l:

@@ -24,7 +24,7 @@ def save_seated(user,mobile,table_num):
     record.conversion = True
     record.waiting= False
     record.seated = True
-    record.table_num = table_num
+    record.table_num = table_num[1:-1]
     record.save(update_fields=['conversion','waiting','seated','table_num'])
 
 def save_checkout(user,mobile,bill):

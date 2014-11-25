@@ -15,7 +15,7 @@ class Guest(models.Model):
     start_time = models.DateTimeField(blank=True,null=True)
     waiting_time = models.IntegerField(blank=True,max_length=2,default=0)
     status = models.IntegerField(default=0)   #0-nothing 1-waitinglist 2-seated
-    table_no = models.IntegerField(default=0)  #Table no in which he is seated
+    table_no = models.CharField(default='0',max_length =32)  #Table no in which he is seated
     current = models.CharField(default="null", max_length =32)  #Rest at which currently seated or waiting list
 
 class PersonalRecord(models.Model):
