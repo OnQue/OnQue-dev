@@ -27,6 +27,8 @@ class Record(models.Model):
     waiting = models.BooleanField(default=True)
     seated = models.BooleanField(default=False)
     directly_seated = models.BooleanField(default=False)
+    take_away = models.BooleanField(default=False)
+    no_show = models.BooleanField(default=False)
 
 class Feedback(models.Model):
     user = models.ForeignKey(User)
@@ -35,6 +37,7 @@ class Feedback(models.Model):
     service = models.IntegerField(blank=True,null=True)
     ambience = models.IntegerField(blank=True,null=True)
     Food = models.IntegerField(blank=True,null=True)
+    record = models.ForeignKey(Record,null=True)
 
 
 

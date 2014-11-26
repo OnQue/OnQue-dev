@@ -289,6 +289,9 @@ def adduser(request):
 			seat = request.POST.get('seat', '')
 			if seat:#Visitor has to be seated directly
 				return seatDirectly(request)
+			takeaway = request.POST.get('takeaway', '')
+			if takeaway: #Visitor came for takeaway
+				return takeAway(request)
 			mobile = int(request.POST.get('mobile', ''))
 			name = request.POST.get('name', '')
 			waitingtime = request.POST.get('waitingtime', '')
@@ -464,6 +467,52 @@ def seatDirectly(request):
 	t.save(update_fields=['status','seated'])
 	print "===============FINISHED seatDirectly================="
 	return HttpResponseRedirect('/front/')
+
+def takeAway(request):
+	print "============Reached takeAway=============="
+	mobile = int(request.POST.get('mobile', ''))
+	name = request.POST.get('name', '')
+	date = utils.time_now()
+	if utils.guest_exists(mobile):
+		g = Guest.objects.get(mobile=mobile)
+		g.last_visited ={'restuarant':request.user.username,'date':date}
+		print "Saving direct user with: table_no: ", str(tables)[1:-1]
+		g.save(update_fields=['last_visited'])
+	else:
+		print "Creating and Saving takeAway user", 
+		g=Guest(mobile=mobile,created_at=date,status=0,name=name,last_visited ={'restuarant':request.user.username,'date':date})
+		g.save()
+		utils.send_link_to_register(mobile,name)
+	signals.save_takeaway(request.user,mobile,date)
+	print "============ENDING takeAway=============="
+	return HttpResponseRedirect('/front/')
+
+def noShow(request):
+	print "===========REACHED noShow===================="
+	if  request.user.is_authenticated():
+		if request.method == 'POST':
+			mobile = int(request.POST.get('mobile', ''))
+			print mobile
+			t=table.objects.get(user=request.user)
+			waiting = t.waiting_list['waiting_list']
+			if mobile not in waiting:
+				return HttpResponseRedirect('/front/?error=%d not i waiting list' %mobile)
+			waiting.remove(mobile)
+			t.waiting_list = {'waiting_list':waiting}
+			g=Guest.objects.get(mobile=mobile)
+			g.current="null"
+			g.status = 0
+			g.last_visited ={'restuarant':request.user.username,'date':utils.time_now()}
+			t.save(update_fields=['waiting_list'])
+			g.save(update_fields=['current','status','last_visited'])
+			signals.save_noshow(request.user,mobile)
+
+		return HttpResponseRedirect('/front/')
+	return HttpResponseRedirect('/login?msg=%s' %_MSG_CODES['lap'])			
+
+
+
+
 
 
 def analytics(request):

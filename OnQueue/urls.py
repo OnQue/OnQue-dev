@@ -37,6 +37,7 @@ urlpatterns = patterns('',
     url(r'^sendsms/$', 'clients.views.sendsms'),
     url(r'^adduser/$', 'clients.views.adduser'),
     url(r'^seatUser/$', 'clients.views.seatUser'),
+    url(r'^noShow/$', 'clients.views.noShow'),
     
 
 

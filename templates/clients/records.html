@@ -107,7 +107,7 @@
                               <tr>
                                   <th><i class="hidden-phone"></i> Mobile No</th>
                                   <th class="fa fa-bookmark">Date</th>
-                                  <th class=""><i class="fa fa-question-circle"></i> Conversion</th>
+                                  <th class=""><i class="fa fa-question-circle"></i> Type</th>
                                   <th><i class="fa fa-bookmark"></i> Name</th>
                                   <th><i class=" fa fa-bookmark"></i> Age</th>
                                   <th><i class=" fa fa-bookmark"></i> Bill</th>
@@ -120,7 +120,19 @@
                               <tr>
                                   <td><a href="#">{{record.mobile}}</a></td>
                                   <td class="hidden-phone">{{record.date}}</td>
-                                  <td>{{record.conversion}}</td>
+                                  {% if record.take_away == 1 %}
+                                     <td>Take away</td>
+                                  {% elif record.seat_directly == 1 %}
+                                     <td>Seated Directly</td>
+
+                                  {% else %}
+                                      {%if record.conversion == 1 %}
+                                        <td>Conversion</td>
+                                      {% else %}
+                                         <td>No show</td>
+                                      {% endif %}
+                                      
+                                  {% endif %}
                                   {% if record.name  %}
                                     <td>{{record.name}}</td>
                                   {% else %}

@@ -58,8 +58,8 @@
                                 <a href="#{{user.name}}seated">
                                 <img class="seated" src="/static/img//seated.png">
                                 </a>
-                                <a href="">
-                                <img class="noshow" src="/static/img//noshow.png">
+                                <a href="#">
+                                <img id="{{user.mobile}}" onclick="myFunction(this, 'red')" class="noshow" src="/static/img//noshow.png">
                                 </a>
                             </div>
                             <div class="pull-left location">booth</div>
@@ -224,9 +224,8 @@
                 <input type="submit" name="seat" class="btn" id="addBtn" value="Seat">
               {% endif %}
                 <input type="submit" name="add_to_waiting"  class="btn btn-primary" id="cancelBtn" Value="Waiting"/>
-              
-              <!-- <button type="button" name="seat" class="btn" id="addBtn" >Seat</button></input> -->
-              <input type="button" name="takeaway" class="btn btn-primary" id="sendBtn" value="Take away" />
+
+              <input type="submit" name="takeaway" class="btn btn-primary" id="sendBtn" value="Take away" />
             </div>
           </form>
         </div> <!-- closing step1 div -->
@@ -246,7 +245,14 @@
 <script src="/static/js/jquery.min.js"></script>
 <script src="/static/js/bootstrap.min.js"></script>
 
-
+<script>
+function myFunction(elmnt,clr) {
+    console.log('readched');
+    console.log(elmnt.id);
+    document.body.innerHTML += '<form id="dynForm" action="/noShow/" method="post"><input type="hidden" name="mobile" value="'+elmnt.id+'"> <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}"" /></form>';
+document.getElementById("dynForm").submit();
+}
+</script>
  
 <link rel="stylesheet" href="/static/css/bootstrap.min.css">
 </body>
