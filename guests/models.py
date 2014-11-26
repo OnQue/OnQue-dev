@@ -19,7 +19,7 @@ class Guest(models.Model):
     current = models.CharField(default="null", max_length =32)  #Rest at which currently seated or waiting list
     #
     def __unicode__(self):
-        return u'%d' % (self.mobile)
+        return u'%s' % (self.mobile)
 
 class PersonalRecord(models.Model):
     guest = models.ForeignKey(Guest)
@@ -27,4 +27,4 @@ class PersonalRecord(models.Model):
     date = models.DateTimeField(auto_now_add=True, blank=False)
 
     def __unicode__(self):
-        return u'%d' % (self.guest.mobile)
+        return u'%s' % (self.guest.mobile)

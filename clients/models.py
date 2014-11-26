@@ -47,7 +47,7 @@ class Record(models.Model):
     feed_match = models.IntegerField(default=generate_feed_match(),max_length=4,editable=False,null=True)
 
     def __unicode__(self):
-        return u'%d' % (self.mobile)
+        return u'%s' % (self.mobile)
 
 class Feedback(models.Model):
     user = models.ForeignKey(User)
