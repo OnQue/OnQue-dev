@@ -38,6 +38,7 @@ urlpatterns = patterns('',
     url(r'^adduser/$', 'clients.views.adduser'),
     url(r'^seatUser/$', 'clients.views.seatUser'),
     url(r'^noShow/$', 'clients.views.noShow'),
+    url(r'^notifyGuest/$', 'clients.views.notifyGuest'),
     
 
 

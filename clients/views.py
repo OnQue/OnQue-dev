@@ -614,6 +614,18 @@ def sendsms(request):
 	else:
 		return render(request,'clients/permission_denied.html',{'msg':'Not authorized'})
 
+def notifyGuest(request):
+	if request.user.is_authenticated():
+		number = int(request.POST.get('number'))
+		message = request.POST.get('message')
+		if number and message:
+			response = utils.send_sms(number,message)
+			return HttpResponseRedirect('/front/')
+		else:
+			response = "Invalid Number or message"
+			return HttpResponseRedirect('/front/?error=Please enter both number and message')
+	return render(request,'clients/permission_denied.html',{'msg':'Not authorized'})
+
 
 
 

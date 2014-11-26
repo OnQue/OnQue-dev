@@ -27,6 +27,10 @@
 .body{
 
 }
+#guestInWaiting{
+	position: relative;
+	margin-bottom: 25px;
+}
 
 .row1{
 	width:100%;

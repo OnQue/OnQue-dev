@@ -106,7 +106,7 @@ STATIC_URL = '/static/'
 STATIC_ROOT = 'static'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "clients/static"),
-    os.path.join(BASE_DIR, "guests/static"),
+    # os.path.join(BASE_DIR, "guests/static"),
 
 ]
 

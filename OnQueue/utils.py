@@ -1,7 +1,7 @@
 from guests.models import Guest
 from clients.models import table
 import datetime
-from math import floor
+from math import floor, ceil
 from twill.commands import *
 from datetime import timedelta
 import urllib2
@@ -65,6 +65,18 @@ def get_waiting_detail(u):
             retVal[mobile]=rem
     return retVal
 
+def get_waiting_time(guest):
+    start_time = guest.start_time
+    print start_time,time_now()
+    diff = (time_now() - start_time).total_seconds()
+    rem = guest.waiting_time*60 - floor(diff)
+    if(rem <=0):
+        retVal = -1
+    else:
+        retVal = int(ceil(rem/60.0))
+    return retVal
+
+
 def send_sms(number,message):
     
     print "==============SEND SMS=================="
@@ -99,6 +111,11 @@ def clean_dict_JSON(mydict):
 
     return mydict
 
+def get_last_visited_details(guest):
+    date = guest.last_visited['date'].strftime("%B %d, %Y")
+    place = guest.last_visited['restuarant']
+    return ({'date':date,'place':place})
+
 def get_user_details(waiting_list):
     # print waiting_list,"=================="
     a= waiting_list
@@ -113,10 +130,11 @@ def get_user_details(waiting_list):
             user['name'] = g.name
             user['mobile'] = g.mobile
             user['age'] = g.age
-            user['lastVisited']="Yesterday"
+            user['time_left'] = get_waiting_time(g)
+            user['waiting_time'] = g.waiting_time
+            user['lastVisited']=g.last_visited
             user['tablesReqd'] = 1
             users.append(user)
-            i+=1
 
     print users
     return users
