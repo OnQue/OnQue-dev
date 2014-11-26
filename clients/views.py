@@ -688,13 +688,14 @@ def front(request):
 		
 		#--table checkout starts
 		t = table.objects.get(user=request.user)
+		client = t
 		seated = t.seated['seated']
 		parties_seated = len(seated)
 		checkout_table_nums = t.status['booked']
 		free_tables = t.status['free']
 		#--table checkout ends
 
-		return render(request,'clients/front.html',{'users':users,'checkout_table_nums':checkout_table_nums,'free_tables':free_tables,'parties_seated':parties_seated,'parties_waiting':parties_waiting})
+		return render(request,'clients/front.html',{'users':users,'client':client,'checkout_table_nums':checkout_table_nums,'free_tables':free_tables,'parties_seated':parties_seated,'parties_waiting':parties_waiting})
 	return HttpResponseRedirect('/login?msg=%s' %_MSG_CODES['lap'])
 
 def sendsms(request):
