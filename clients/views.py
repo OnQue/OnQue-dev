@@ -33,7 +33,7 @@ def init_newuser_data(sender, **kwargs):
 	try:
 		rest_name = user.username+'_'+'name'
 		t, t_created = table.objects.get_or_create(user=user,
-            defaults={'user':user,'rest_name':rest_name,'n_of_table':10,'status':{'free':[1,2,3,4,5,6,7,8,9,10],'booked':[]}})
+            defaults={'user':user,'username':user.username,'rest_name':rest_name,'n_of_table':10,'status':{'free':[1,2,3,4,5,6,7,8,9,10],'booked':[]}})
 	except MultipleObjectsReturned:
 		pass
 
@@ -68,6 +68,9 @@ def login(request):
 	    if user is not None and user.is_active:
 	        # Correct password, and the user is marked "active"
 	        auth.login(request, user)
+	        client = utils.user_to_client(user)
+	        if client.first_login:
+	        	return HttpResponseRedirect("/firstLogin/")
 	        # Redirect to a success page.
 	        return HttpResponseRedirect("/dashboard/")
 
@@ -78,6 +81,42 @@ def login(request):
 	msg=request.GET.get('msg','')
 
 	return render(request, 'clients/login.html',{'msg':msg})
+
+def firstLogin(request):
+	if  request.user.is_authenticated():
+		client = utils.user_to_client(request.user)
+		if client.first_login:
+			if request.method == 'POST':
+				first_name = request.POST.get('firstName','')
+				last_name = request.POST.get('lastName','')
+				mobile = int(request.POST.get('mobile',''))
+				email = request.POST.get('email','')
+				n_of_table = int(request.POST.get('n_of_table',''))
+				city = request.POST.get('city','')
+				password = request.POST.get('password','')
+				rest_name = request.POST.get('restName','')
+				u = request.user
+				u.set_password(password)
+				u.save()
+				print first_name, last_name, mobile, email, n_of_table, city, password
+				client = utils.user_to_client(request.user)
+				client.first_name =  first_name
+				client.last_name = last_name
+				client.mobile = mobile
+				client.n_of_table = n_of_table
+				client.email = email
+				client.city = city
+				client.rest_name = rest_name
+				client.first_login = False
+				client.save(update_fields=['first_login','rest_name','first_name','last_name','mobile','n_of_table','email','city'])
+				user = auth.authenticate(username=request.user.username, password=password)
+				auth.login(request, user)
+				return HttpResponseRedirect('/dashboard/')
+			return render(request,'clients/first_login.html')
+		else:
+			return HttpResponseRedirect('/dashboard/')
+
+	return HttpResponseRedirect('/login?msg=%s' %_MSG_CODES['lap'])
 
 
 def logout(request):
@@ -138,7 +177,7 @@ def update_tables(request):
 				form.save()
 				return HttpResponseRedirect('/loggedin/')
 		form = MyForm(None, instance=instance)
-		return render(request, 'clients/old_templates/update_tables.html', {'form': form})
+		return render(request, 'clients/old_templates/admin_settings.html', {'form': form})
 	else:
 		return render(request,'clients/login.html',{'msg':'Please login to access that page'})
 
@@ -151,7 +190,7 @@ def update_default(request):
 				form.save()
 				return HttpResponseRedirect('/loggedin/')
 		form = MyForm(None, instance=instance)
-		return render(request, 'clients/old_templates/update_tables.html', {'form': form})
+		return render(request, 'clients/old_templates/admin_settings.html', {'form': form})
 	else:
 		return render(request,'clients/login.html',{'msg':'Please login to access that page'})
 
@@ -219,19 +258,61 @@ def checkout(request):
 def admin_settings(request):
 	if  request.user.is_authenticated():
 		if request.method == "POST":
-			t=table.objects.get(user=request.user)
-			n = int(request.POST.get('n_of_table'))
-			t.n_of_table = n
-			free = []
-			for i in range(1,n+1): 
-				free.append(i)
-			free.sort()
-			t.status = {'booked':[],'free':free}
-			t.seated = {'seated':[]}
-			t.waiting_list = {'waiting_list':[]}
-			t.save(update_fields=['n_of_table','seated','waiting_list','status'])
-			return HttpResponseRedirect('/')
-		return render(request, 'clients/update_tables.html')
+			ChangePassword = request.POST.get('ChangePassword','')
+			ChangeTables = request.POST.get('ChangeTables','')
+			Other = request.POST.get('Other','')
+			first_name = request.POST.get('firstName','')
+			last_name = request.POST.get('lastName','')
+			mobile = request.POST.get('mobile','')
+			n_of_table = request.POST.get('n_of_table','')
+			password = request.POST.get('password','')
+			rest_name = request.POST.get('restName','')
+
+			client = utils.user_to_client(request.user)
+			if n_of_table:
+				print "Chaning No of tables"
+				client.n_of_table = int(n_of_table)
+				free = []
+				for i in range(1,int(n_of_table)+1): 
+					free.append(i)
+				free.sort()
+				client.status = {'booked':[],'free':free}
+				client.seated = {'seated':[]}
+				client.waiting_list = {'waiting_list':[]}
+				client.save(update_fields=['n_of_table','seated','waiting_list','status'])
+
+			if first_name:
+				client.first_name = first_name
+				client.save(update_fields=['first_name'])
+
+			if last_name:
+				client.last_name = last_name
+				client.save(update_fields=['last_name'])
+
+			if rest_name:
+				client.rest_name = rest_name
+				client.save(update_fields=['rest_name'])
+
+			if mobile:
+				client.mobile = int(mobile)
+				client.save(update_fields=['mobile'])
+
+			if password:
+				print "Changing Password"
+				u = request.user
+				u.set_password(password)
+				u.save()
+				user = auth.authenticate(username=request.user.username, password=password)
+				auth.login(request, user)
+
+
+
+			# t=table.objects.get(user=request.user)
+			# n = int(request.POST.get('n_of_table'))
+			# t.n_of_table = n
+			
+			return HttpResponseRedirect('/dashboard/')
+		return render(request, 'clients/admin_settings.html')
 		
 	return HttpResponseRedirect('/login?msg=%s' %_MSG_CODES['lap'])
 
@@ -239,11 +320,15 @@ def admin_settings(request):
 
 def dashboard(request):
 	if  request.user.is_authenticated():
+		client = utils.user_to_client(request.user)
+		if client.first_login:
+			return HttpResponseRedirect('/firstLogin/')
 		n_of_tables = table.objects.get(user=request.user)
 		seated=utils.get_seated_guests(request.user)
 		waiting=utils.get_waiting_guests(request.user)
+		
 
-		return render(request,'clients/dashboard.html', {'n_of_tables':n_of_tables.n_of_table,'status':n_of_tables.status,'seated':seated,'waiting':waiting})
+		return render(request,'clients/dashboard.html', {'client':client,'n_of_tables':n_of_tables.n_of_table,'status':n_of_tables.status,'seated':seated,'waiting':waiting})
 	else:
 		return HttpResponseRedirect('/login?msg=%s' %_MSG_CODES['lap'])
 		
@@ -588,8 +673,12 @@ def permission_denied(request):
 
 def front(request):
 	if request.user.is_authenticated():
+		client = utils.user_to_client(request.user)
+		if client.first_login:
+			return HttpResponseRedirect('/firstLogin/')
 		rest_name = table.objects.get(user=request.user).rest_name
-		response = urllib2.urlopen('http://localhost:8000/api/v1/table/%s/?format=json' %rest_name) 
+		response = urllib2.urlopen('http://localhost:8000/api/v1/table/%s/?format=json' %request.user.username) 
+		print response
 		waiting_list = json.load(response)
 		users = utils.get_user_details(waiting_list['waiting_list'])
 		

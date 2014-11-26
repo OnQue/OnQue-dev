@@ -4,7 +4,7 @@
               <ul class="sidebar-menu" id="nav-accordion">
               
                   <p class="centered"><a href="profile.html"><img src="/static/img/ui-sam.jpg" class="img-circle" width="60"></a></p>
-                  <h5 class="centered">{{user.get_username}}</h5>
+                  <h5 class="centered">{{client.first_name}} {{client.last_name}}</h5>
                     
                   <li class="mt">
                       <a class="active" href="/dashboard">
@@ -13,7 +13,7 @@
                       </a>
                   </li>
 
-                  <li class="sub-menu">
+<!--                   <li class="sub-menu">
                       <a href="javascript:;" >
                           <i class="fa fa-desktop"></i>
                           <span>UI Elements</span>
@@ -23,20 +23,20 @@
                           <li><a  href="#">Buttons</a></li>
                           <li><a  href="#">Panels</a></li>
                       </ul>
-                  </li>
+                  </li> -->
 
                   <li class="sub-menu">
-                      <a href="javascript:;" >
+                      <a href="/settings/" >
                           <i class="fa fa-cogs"></i>
-                          <span>Components</span>
+                          <span>Settings</span>
                       </a>
                       <ul class="sub">
-                          <li><a  href="#">Calendar</a></li>
-                          <li><a  href="#">Gallery</a></li>
-                          <li><a  href="#">Todo List</a></li>
+                          <li><a  href="/settings#ChangeTables">Change No of tables</a></li>
+                          <li><a  href="/settings#ChangePassword">Change Password</a></li>
+                          <li><a  href="/settings#Other">Other details</a></li>
                       </ul>
                   </li>
-                  <li class="sub-menu">
+<!--                   <li class="sub-menu">
                       <a href="javascript:;" >
                           <i class="fa fa-book"></i>
                           <span>Extra Pages</span>
@@ -46,8 +46,8 @@
                           <li><a  href="#">Login</a></li>
                           <li><a  href="#">Lock Screen</a></li>
                       </ul>
-                  </li>
-                  <li class="sub-menu">
+                  </li> -->
+<!--                   <li class="sub-menu">
                       <a href="javascript:;" >
                           <i class="fa fa-tasks"></i>
                           <span>Forms</span>
@@ -55,7 +55,7 @@
                       <ul class="sub">
                           <li><a  href="#">Form Components</a></li>
                       </ul>
-                  </li>
+                  </li> -->
                   <li class="sub-menu">
                       <a href="javascript:;" >
                           <i class="fa fa-th"></i>

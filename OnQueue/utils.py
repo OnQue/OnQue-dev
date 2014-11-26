@@ -139,6 +139,10 @@ def get_user_details(waiting_list):
     print users
     return users
 
+def user_to_client(user):
+    t=table.objects.get(user=user)
+    return t
+
 
 
 

@@ -33,11 +33,11 @@ class TableResource(ModelResource):
     class Meta:
         queryset = table.objects.all()
         resource_name = 'table'
-        detail_uri_name = 'rest_name'
+        detail_uri_name = 'username'
 
     def prepend_urls(self):
         return [
-            url(r"^(?P<resource_name>%s)/(?P<rest_name>[\w\d_.-]+)/$" % self._meta.resource_name, self.wrap_view('dispatch_detail'), name="api_dispatch_detail"),
+            url(r"^(?P<resource_name>%s)/(?P<username>[\w\d_.-]+)/$" % self._meta.resource_name, self.wrap_view('dispatch_detail'), name="api_dispatch_detail"),
         ]
         
 class RecordResource(ModelResource):

@@ -39,6 +39,7 @@ urlpatterns = patterns('',
     url(r'^seatUser/$', 'clients.views.seatUser'),
     url(r'^noShow/$', 'clients.views.noShow'),
     url(r'^notifyGuest/$', 'clients.views.notifyGuest'),
+    url(r'^firstLogin/$', 'clients.views.firstLogin'),
     
 
 

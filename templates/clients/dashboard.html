@@ -76,7 +76,7 @@
                   		</div></a>
                   		<div class="col-md-2 col-sm-2 box0">
                   			<div class="box1">
-                        <a href="/checkout/">
+                        <a href="/front/">
 					  			<span class="li_cloud"></span>
 					  			<h3>Checkout</h3>
                   			</div>
@@ -202,7 +202,7 @@
         $(document).ready(function () {
         var unique_id = $.gritter.add({
             // (string | mandatory) the heading of the notification
-            title: 'Welcome {{user.username}} to your Dashboard!',
+            title: '{{client.first_name}}, welcome to your Dashboard!',
             // (string | mandatory) the text inside the notification
             text: 'You can add new customers, see analytics and much more here!',
             // (string | optional) the image to display on the left

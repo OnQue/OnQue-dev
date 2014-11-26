@@ -7,11 +7,21 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 
 class table(models.Model):
     user = models.ForeignKey(User,primary_key=True)
+    username = models.CharField(null=True,blank=True,max_length=32)
+    first_name = models.CharField(null=True,blank=True,max_length=32)
+    last_name = models.CharField(null=True,blank=True,max_length=32)
+    email = models.EmailField(null=True,blank=True,max_length=60)
+    city = models.CharField(null=True,blank=True,max_length=32)
+    mobile = models.IntegerField(null=True,blank=True,max_length=10)
     rest_name = models.CharField(null=True,blank=True,max_length=32)
     n_of_table = models.IntegerField(default=0)
     status = JSONField()
     waiting_list = JSONField(default={'waiting_list':[]},null=True)
     seated = JSONField(default={'seated':[]},null=True)
+    first_login = models.BooleanField(default=True)
+    
+    def __unicode__(self):
+        return u'%s' % (self.user.username)
 
     
 class Record(models.Model):
@@ -29,6 +39,9 @@ class Record(models.Model):
     directly_seated = models.BooleanField(default=False)
     take_away = models.BooleanField(default=False)
     no_show = models.BooleanField(default=False)
+
+    def __unicode__(self):
+        return u'%d' % (self.mobile)
 
 class Feedback(models.Model):
     user = models.ForeignKey(User)

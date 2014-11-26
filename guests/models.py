@@ -18,7 +18,13 @@ class Guest(models.Model):
     table_no = models.CharField(default='0',max_length =32)  #Table no in which he is seated
     current = models.CharField(default="null", max_length =32)  #Rest at which currently seated or waiting list
 
+    def __unicode__(self):
+        return u'%d' % (self.mobile)
+
 class PersonalRecord(models.Model):
     guest = models.ForeignKey(Guest)
     restuarant = models.CharField(blank=True, max_length =32)
     date = models.DateTimeField(auto_now_add=True, blank=False)
+
+    def __unicode__(self):
+        return u'%d' % (self.guest.mobile)
