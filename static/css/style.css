@@ -42,6 +42,23 @@ a, a:hover, a:focus {
     height: 100%;
 }
 
+
+/* Changed By vikas   */
+
+.admin_settings {
+    position: relative;
+    left: 10%;
+    width: 500px;
+}
+
+.feedback {
+    position: fixed;
+    left: 30%;
+    top: 20%;
+    width: 700px;
+    min-width: 500px;
+}
+
 /* Bootstrap Modifications */
 .modal-header {
 	background: #68dff0;
