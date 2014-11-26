@@ -9,7 +9,7 @@ class RecordAdmin(admin.ModelAdmin):
     list_filter = ('date','take_away','no_show','user',)
 
 class tableAdmin(admin.ModelAdmin):
-    list_display = ('user', 'rest_name', 'n_of_table','status','waiting_list','seated','first_login')
+    list_display = ('user','mobile', 'rest_name', 'n_of_table','status','waiting_list','seated','first_login')
     search_fields = ('user__username','rest_name')
     fields = ('rest_name','n_of_table','first_login')
 

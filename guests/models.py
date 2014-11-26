@@ -6,7 +6,7 @@ from jsonfield import JSONField
 
 # Create your models here.
 class Guest(models.Model):
-    mobile = models.IntegerField(max_length=10, primary_key=True)
+    mobile = models.CharField(max_length=10, primary_key=True)
     name = models.CharField(blank=True, max_length =32)
     age = models.IntegerField(blank=True,default=18)
     created_at = models.DateTimeField(blank=False)
@@ -17,7 +17,7 @@ class Guest(models.Model):
     status = models.IntegerField(default=0)   #0-nothing 1-waitinglist 2-seated
     table_no = models.CharField(default='0',max_length =32)  #Table no in which he is seated
     current = models.CharField(default="null", max_length =32)  #Rest at which currently seated or waiting list
-
+    #
     def __unicode__(self):
         return u'%d' % (self.mobile)
 
