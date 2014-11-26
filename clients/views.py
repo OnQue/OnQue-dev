@@ -15,6 +15,7 @@ from guests.models import Guest
 import datetime
 import urllib2
 from django.conf import settings
+import requests
 
 
 
@@ -90,7 +91,7 @@ def firstLogin(request):
 			if request.method == 'POST':
 				first_name = request.POST.get('firstName','')
 				last_name = request.POST.get('lastName','')
-				mobile = int(request.POST.get('mobile',''))
+				mobile = request.POST.get('mobile','')
 				email = request.POST.get('email','')
 				n_of_table = int(request.POST.get('n_of_table',''))
 				city = request.POST.get('city','')
@@ -99,7 +100,7 @@ def firstLogin(request):
 				u = request.user
 				u.set_password(password)
 				u.save()
-				print first_name, last_name, mobile, email, n_of_table, city, password
+				print first_name, last_name, mobile, email, n_of_table, city, password,"CUSTOM"
 				client = utils.user_to_client(request.user)
 				client.first_name =  first_name
 				client.last_name = last_name
@@ -295,7 +296,7 @@ def admin_settings(request):
 				client.save(update_fields=['rest_name'])
 
 			if mobile:
-				client.mobile = int(mobile)
+				client.mobile = mobile
 				client.save(update_fields=['mobile'])
 
 			if password:
@@ -338,7 +339,7 @@ def add(request):
 	errors = []
 	if  request.user.is_authenticated():
 		if request.method == 'POST':
-			mobile = int(request.POST.get('mobile', ''))
+			mobile = request.POST.get('mobile', '')
 			errors = []
 			print mobile,"-------------------------------"
 			waiting_list = utils.get_waiting_guests(request.user)
@@ -378,7 +379,7 @@ def adduser(request):
 			takeaway = request.POST.get('takeaway', '')
 			if takeaway: #Visitor came for takeaway
 				return takeAway(request)
-			mobile = int(request.POST.get('mobile', ''))
+			mobile = request.POST.get('mobile', '')
 			name = request.POST.get('name', '')
 			waitingtime = request.POST.get('waitingtime', '')
 			partysize = request.POST.get('partysize', '')
@@ -430,7 +431,7 @@ def countdown(request):
 def seated(request):
 	if  request.user.is_authenticated():
 		if request.method == 'POST':
-			guest_num = int(request.POST.get('guest_num'))
+			guest_num = request.POST.get('guest_num')
 			table_num = int(request.POST.get('table_num'))
 			t=table.objects.get(user=request.user)
 			free = t.status['free']
@@ -466,7 +467,7 @@ def seatUser(request):
 	if  request.user.is_authenticated():
 		if request.method == 'POST':
 			mydict = request.POST
-			mobile = int(request.POST.get('mobile'))
+			mobile = request.POST.get('mobile')
 			print "===============seatUser=================="
 			tables = []
 			for key, value in mydict.iteritems():
@@ -506,7 +507,7 @@ def seatUser(request):
 def seatDirectly(request):
 	print "============Reached seatDirectly=============="
 	mydict = request.POST
-	mobile = int(request.POST.get('mobile', ''))
+	mobile = request.POST.get('mobile', '')
 	name = request.POST.get('name', '')
 	waitingtime = request.POST.get('waitingtime', '')
 	partysize = request.POST.get('partysize', '')
@@ -556,7 +557,7 @@ def seatDirectly(request):
 
 def takeAway(request):
 	print "============Reached takeAway=============="
-	mobile = int(request.POST.get('mobile', ''))
+	mobile = request.POST.get('mobile', '')
 	name = request.POST.get('name', '')
 	date = utils.time_now()
 	if utils.guest_exists(mobile):
@@ -577,7 +578,7 @@ def noShow(request):
 	print "===========REACHED noShow===================="
 	if  request.user.is_authenticated():
 		if request.method == 'POST':
-			mobile = int(request.POST.get('mobile', ''))
+			mobile = request.POST.get('mobile', '')
 			print mobile
 			t=table.objects.get(user=request.user)
 			waiting = t.waiting_list['waiting_list']
@@ -680,7 +681,11 @@ def front(request):
 		rest_name = table.objects.get(user=request.user).rest_name
 		url = '%s/api/v1/table/%s/?format=json' %(settings.HOST,request.user.username)
 		print url
+		# response = '{"city": "Lucknow", "email": "vikasmishra95@gmail.com", "first_login": "false", "first_name": "Vikas", "last_name": "Mishra", "mobile": "234", "n_of_table": 13, "resource_uri": "/api/v1/table/onque/", "rest_name": "Fake", "seated": "{useated": []}", "status": "{u"booked": [], u"free": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}", "user": "/api/v1/user/onque/", "username": "onque", "waiting_list": "{u"waiting_list": []}"}'
 		response = urllib2.urlopen(url) 
+		# r = requests.get('http://localhost:8001/api/v1/table/onque/?format=json')
+		# waiting_list = r.json()
+
 		print response
 		waiting_list = json.load(response)
 		users = utils.get_user_details(waiting_list['waiting_list'])
@@ -712,7 +717,7 @@ def sendsms(request):
 
 def notifyGuest(request):
 	if request.user.is_authenticated():
-		number = int(request.POST.get('number'))
+		number = request.POST.get('number')
 		message = request.POST.get('message')
 		if number and message:
 			response = utils.send_sms(number,message)

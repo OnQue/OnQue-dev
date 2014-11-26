@@ -25,7 +25,7 @@ SECRET_KEY = '9$m6#aza)ictbav1r=tx%9!-g2j&9ea(gdt3*^a@fnz&l&0gd8'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-SEND_SMS = True
+SEND_SMS = False
 
 TEMPLATE_DEBUG = True
 
@@ -34,6 +34,7 @@ ALLOWED_HOSTS = []
 #User model
 AUTH_PROFILE_MODULE = 'clients.UserProfile'
 
+HOST = "http://localhost"
 
 # Application definition
 
@@ -82,11 +83,17 @@ WSGI_APPLICATION = 'OnQueue.wsgi.application'
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+            'NAME': 'myseconddb',                      # Or path to database file if using sqlite3.
+            # The following settings are not used with sqlite3:
+            'USER': 'onque',
+            'PASSWORD': 'treehouse123',
+            'HOST': 'localhost',                      # Empty for localhost through domain sockets or           '127.0.0.1' for localhost through TCP.
+            'PORT': '',                      # Set to empty string for default.
+        }
     }
-}
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/

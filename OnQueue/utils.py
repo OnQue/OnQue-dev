@@ -83,6 +83,7 @@ def send_sms(number,message):
     print "Number: ",number
     print "Message: ",message
     print "========================================"
+    number = int(number)
     message=message.replace(' ','%20')
     response = 17011
     if settings.SEND_SMS:
@@ -122,11 +123,13 @@ def get_user_details(waiting_list):
     i = 0
     num = a[a.find("[")+1:a.find("]")]
     l= num.split(',')
+    print l
     users = []
     if len(l)>=1 and l[0]!='':
         for num in l:
             user = {}
-            g=Guest.objects.get(mobile=int(num))
+            print str((num[2:-1])),"VIKAS"
+            g=Guest.objects.get(mobile=num[2:-1])
             user['name'] = g.name
             user['mobile'] = g.mobile
             user['age'] = g.age
