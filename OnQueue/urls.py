@@ -40,6 +40,7 @@ urlpatterns = patterns('',
     url(r'^noShow/$', 'clients.views.noShow'),
     url(r'^notifyGuest/$', 'clients.views.notifyGuest'),
     url(r'^firstLogin/$', 'clients.views.firstLogin'),
+    url(r'^f/(\d+)/(\d+)/$', 'clients.views.feedback'),
     
 
 

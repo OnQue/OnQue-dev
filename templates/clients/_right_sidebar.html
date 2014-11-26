@@ -17,18 +17,6 @@
                       {% endfor %}
             <h3>Booked Tables</h3>
 
-                    {% if not status.booked %}
-                      <div class="desc">
-                        <div class="thumb">
-                          <span class="badge bg-theme"><i class="fa fa-clock-o"></i></span>
-                        </div>
-                        <div class="details">
-                          <!-- <p><muted>2 Minutes Ago</muted><br/> -->
-                             <a href="#">All Free</a><br/>
-                          </p>
-                        </div>
-                      </div>
-                    {% endif %}
 
                       {% if status.booked %}
                           {% for i in status.booked %}
@@ -45,6 +33,8 @@
                       {% endfor %}
 
                       {% endif %}
+                      <div class="desc">
+                      </div>
 
             <h3>Seated Guests</h3>
                                         
@@ -61,6 +51,8 @@
                         </div>
                       </div>
                       {% endfor %}
+                      <div class="desc">
+                      </div>
 
             <h3>Guests in Waiting List</h3>
                                         
@@ -77,51 +69,10 @@
                         </div>
                       </div>
                       {% endfor %}
+                      <div class="desc">
+                      </div>
 
-                      <!-- Second Action -->
-                      <!-- <div class="desc">
-                      	<div class="thumb">
-                      		<span class="badge bg-theme"><i class="fa fa-clock-o"></i></span>
-                      	</div>
-                      	<div class="details">
-                      		<p><muted>3 Hours Ago</muted><br/>
-                      		   <a href="#">Diana Kennedy</a> purchased a year subscription.<br/>
-                      		</p>
-                      	</div>
-                      </div> -->
-                      <!-- Third Action -->
-                      <!-- <div class="desc">
-                      	<div class="thumb">
-                      		<span class="badge bg-theme"><i class="fa fa-clock-o"></i></span>
-                      	</div>
-                      	<div class="details">
-                      		<p><muted>7 Hours Ago</muted><br/>
-                      		   <a href="#">Brandon Page</a> purchased a year subscription.<br/>
-                      		</p>
-                      	</div>
-                      </div> -->
-                      <!-- Fourth Action -->
-                      <!-- <div class="desc">
-                      	<div class="thumb">
-                      		<span class="badge bg-theme"><i class="fa fa-clock-o"></i></span>
-                      	</div>
-                      	<div class="details">
-                      		<p><muted>11 Hours Ago</muted><br/>
-                      		   <a href="#">Mark Twain</a> commented your post.<br/>
-                      		</p>
-                      	</div>
-                      </div> -->
-                      <!-- Fifth Action -->
-                      <!-- <div class="desc">
-                      	<div class="thumb">
-                      		<span class="badge bg-theme"><i class="fa fa-clock-o"></i></span>
-                      	</div>
-                      	<div class="details">
-                      		<p><muted>18 Hours Ago</muted><br/>
-                      		   <a href="#">Daniel Pratt</a> purchased a wallet in your store.<br/>
-                      		</p>
-                      	</div>
-                      </div> -->
+                      
 
                        <!-- USERS ONLINE SECTION -->
 						<h3>TEAM MEMBERS</h3>

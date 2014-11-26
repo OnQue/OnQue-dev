@@ -4,7 +4,7 @@ from django.contrib import admin
 from clients.models import Record, table, Feedback
 
 class RecordAdmin(admin.ModelAdmin):
-    list_display = ('user', 'mobile', 'date','directly_seated','take_away','no_show')
+    list_display = ('user', 'mobile', 'date','directly_seated','take_away','no_show','id','feed_match')
     search_fields = ('mobile','user__username')
     list_filter = ('date','take_away','no_show','user',)
 
@@ -13,6 +13,9 @@ class tableAdmin(admin.ModelAdmin):
     search_fields = ('user__username','rest_name')
     fields = ('rest_name','n_of_table','first_login')
 
+class FeedbackAdmin(admin.ModelAdmin):
+	list_display = ('user','mobile','date','service','ambience','food')
+
 admin.site.register(Record,RecordAdmin)
 admin.site.register(table,tableAdmin)
-admin.site.register(Feedback)
+admin.site.register(Feedback,FeedbackAdmin)

@@ -3,6 +3,11 @@ from django.contrib.auth.models import User
 from django.forms import ModelForm
 from jsonfield import JSONField
 from django.core.validators import MaxValueValidator, MinValueValidator
+from random import randint
+
+
+def generate_feed_match():
+    return randint(100,999)
 
 
 class table(models.Model):
@@ -39,6 +44,7 @@ class Record(models.Model):
     directly_seated = models.BooleanField(default=False)
     take_away = models.BooleanField(default=False)
     no_show = models.BooleanField(default=False)
+    feed_match = models.IntegerField(default=generate_feed_match(),max_length=4,editable=False,null=True)
 
     def __unicode__(self):
         return u'%d' % (self.mobile)
@@ -49,7 +55,7 @@ class Feedback(models.Model):
     mobile = models.IntegerField(blank=False,max_length=10)
     service = models.IntegerField(blank=True,null=True)
     ambience = models.IntegerField(blank=True,null=True)
-    Food = models.IntegerField(blank=True,null=True)
+    food = models.IntegerField(blank=True,null=True)
     record = models.ForeignKey(Record,null=True)
 
 

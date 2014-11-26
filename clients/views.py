@@ -5,7 +5,7 @@ from django.contrib.auth.forms import UserCreationForm
 from clients.forms import MyForm, AdminSettingsForm, AddGuestForm
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
-from clients.models import table, Record
+from clients.models import table, Record, Feedback
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 import json
@@ -14,6 +14,7 @@ from OnQueue import utils,signals
 from guests.models import Guest
 import datetime
 import urllib2
+from django.conf import settings
 
 
 
@@ -524,7 +525,7 @@ def seatDirectly(request):
 			g.status = 2  #Seated
 			g.current = request.user.username
 			g.table_no = str(tables)[1:-1]
-			print "Saving direct user with: table_no: ", str(tables)[1:-1]
+			print "Saving direct user with: table_no: "
 			g.save(update_fields=['status','current','table_no'])
 			signals.save_seated(request.user,mobile,tables,1)
 		else:
@@ -561,7 +562,7 @@ def takeAway(request):
 	if utils.guest_exists(mobile):
 		g = Guest.objects.get(mobile=mobile)
 		g.last_visited ={'restuarant':request.user.username,'date':date}
-		print "Saving direct user with: table_no: ", str(tables)[1:-1]
+		print "Saving direct user with: table_no: "
 		g.save(update_fields=['last_visited'])
 	else:
 		print "Creating and Saving takeAway user", 
@@ -677,18 +678,23 @@ def front(request):
 		if client.first_login:
 			return HttpResponseRedirect('/firstLogin/')
 		rest_name = table.objects.get(user=request.user).rest_name
-		response = urllib2.urlopen('http://localhost:8000/api/v1/table/%s/?format=json' %request.user.username) 
+		url = '%s/api/v1/table/%s/?format=json' %(settings.HOST,request.user.username)
+		print url
+		response = urllib2.urlopen(url) 
 		print response
 		waiting_list = json.load(response)
 		users = utils.get_user_details(waiting_list['waiting_list'])
+		parties_waiting = len(users)
 		
 		#--table checkout starts
 		t = table.objects.get(user=request.user)
+		seated = t.seated['seated']
+		parties_seated = len(seated)
 		checkout_table_nums = t.status['booked']
 		free_tables = t.status['free']
 		#--table checkout ends
 
-		return render(request,'clients/front.html',{'users':users,'checkout_table_nums':checkout_table_nums,'free_tables':free_tables})
+		return render(request,'clients/front.html',{'users':users,'checkout_table_nums':checkout_table_nums,'free_tables':free_tables,'parties_seated':parties_seated,'parties_waiting':parties_waiting})
 	return HttpResponseRedirect('/login?msg=%s' %_MSG_CODES['lap'])
 
 def sendsms(request):
@@ -714,6 +720,40 @@ def notifyGuest(request):
 			response = "Invalid Number or message"
 			return HttpResponseRedirect('/front/?error=Please enter both number and message')
 	return render(request,'clients/permission_denied.html',{'msg':'Not authorized'})
+
+def feedback(request, fid, feed_match):
+	print fid, feed_match
+	feed_match = int(feed_match)
+	if request.method == 'POST':
+		print "REACHED POST"
+		message = request.POST.get('message','')
+		service= int(request.POST.get('service',''))
+		food = int(request.POST.get('food',''))
+		ambience = int(request.POST.get('ambience',''))
+		print message,service,food,ambience
+		r=Record.objects.get(id=fid,feed_match=feed_match)
+		f=Feedback(record=r,user=r.user,mobile=r.mobile,date=utils.time_now(),service=service,ambience=ambience,food=food)
+		f.save()
+		utils.send_sms(r.mobile,'Thankyou for Filling the feedback form')
+		return HttpResponseRedirect('/')
+	try:
+		r=Record.objects.get(id=fid)
+		try:
+			f=Feedback.objects.get(record=r)
+			return HttpResponseRedirect('/?msg=Already filled')
+		except Feedback.DoesNotExist:
+			pass
+		if feed_match == r.feed_match:
+			return render(request,'clients/feedback2.html',{'place':r.rest_name,'date':r.date,'name':r.name})
+	except Record.DoesNotExist:
+		# return render(request,'clients/feedback2.html')
+		print "Does not exist"
+
+	return HttpResponseRedirect('/')
+
+
+	
+	
 
 
 

@@ -51,6 +51,14 @@ a, a:hover, a:focus {
     width: 500px;
 }
 
+.feedback {
+    position: fixed;
+    left: 30%;
+    top: 20%;
+    width: 700px;
+    min-width: 500px;
+}
+
 /* Bootstrap Modifications */
 .modal-header {
 	background: #68dff0;

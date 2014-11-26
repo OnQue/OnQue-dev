@@ -4,6 +4,7 @@ import datetime
 from math import floor
 from OnQueue.utils import time_now
 from utils import send_sms
+from django.conf import settings
 
 
 def save_waiting(user,mobile,waitingtime):
@@ -45,7 +46,8 @@ def save_checkout(user,mobile,bill,flag=0):
         record.seated = False
         record.bill = bill
         record.save()
-    message="Thank you for visiting %s, we would really appreciate if you could fill out the feedback form" %(record.rest_name)
+    feed_url = '%s/f/%d/%d' %(settings.HOST,record.id,record.feed_match)
+    message = "Thank you for visiting %s, feedback form %s" %(record.rest_name,feed_url)
     send_sms(mobile,message)
 
 def save_takeaway(user,mobile,date):
@@ -54,7 +56,8 @@ def save_takeaway(user,mobile,date):
     rest_name = table.objects.get(user=user).rest_name
     record = Record(user=user,rest_name=rest_name,date=date,mobile=mobile,age=guest.age,name=guest.name,take_away=True)
     record.save()
-    message = "Thank you for visiting %s, we would really appreciate if you could fill out the feedback form" %(record.rest_name)
+    feed_url = 'http://localhost:8000/f/%d/%d' %(record.id,record.feed_match)
+    message = "Thank you for visiting %s, feedback form %s" %(record.rest_name,feed_url)
     send_sms(mobile,message)
 
 def save_noshow(user,mobile):

@@ -7,7 +7,10 @@ https://docs.djangoproject.com/en/1.7/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.7/ref/settings/
 """
-
+try:
+    from local_settings import *
+except ImportError:
+    pass
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
@@ -22,7 +25,7 @@ SECRET_KEY = '9$m6#aza)ictbav1r=tx%9!-g2j&9ea(gdt3*^a@fnz&l&0gd8'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-SEND_SMS = False
+SEND_SMS = True
 
 TEMPLATE_DEBUG = True
 
