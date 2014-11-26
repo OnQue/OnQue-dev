@@ -353,7 +353,7 @@ def add(request):
 				else:
 					g=Guest(mobile=mobile,created_at=utils.time_now(),start_time = utils.time_now(),status=1,current = request.user.username,waiting_time = 5)
 					g.save()
-					utils.send_link_to_register(mobile)
+					# utils.send_link_to_register(mobile)
 				##Add user to the waiting list
 				u=User.objects.get(username=request.user.username)
 				utils.update_waiting_list(u,g)
