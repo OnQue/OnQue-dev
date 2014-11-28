@@ -186,18 +186,18 @@
             </div>
             <div class="form-group">
               <div class="keypad">
-                <div class="numpad1"><span class="nums">1</span></div>
-                <div class="numpad2"><span class="nums">3</span></div>
-                <div class="numpad3"><span class="nums">2</span></div>
-                <div class="numpad1"><span class="nums">4</span></div>
-                <div class="numpad2"><span class="nums">6</span></div>
-                <div class="numpad3"><span class="nums">5</span></div>
-                <div class="numpad1"><span class="nums">7</span></div>
-                <div class="numpad2"><span class="nums">9</span></div>
-                <div class="numpad3"><span class="nums">8</span></div>
-                <div class="numpad1"><span class="nums">*</span></div>
-                <div class="numpad2"><span class="nums">#</span></div>
-                <div class="numpad3"><span class="nums">0</span></div>
+                <div class="numpad1 keys"  id="1"><span class="nums">1</span></div>
+                <div class="numpad2 keys"  id="3"><span class="nums">3</span></div>
+                <div class="numpad3 keys"  id="2"><span class="nums">2</span></div>
+                <div class="numpad1 keys"  id="4"><span class="nums">4</span></div>
+                <div class="numpad2 keys"  id="6"><span class="nums">6</span></div>
+                <div class="numpad3 keys"  id="5"><span class="nums">5</span></div>
+                <div class="numpad1 keys"  id="7"><span class="nums">7</span></div>
+                <div class="numpad2 keys"  id="9"><span class="nums">9</span></div>
+                <div class="numpad3 keys"  id="8"><span class="nums">8</span></div>
+                <div class="numpad1 keys"  id="r"><span class="nums">R</span></div>
+                <div class="numpad2 keys"  id="c"><span class="nums">C</span></div>
+                <div class="numpad3 keys"  id="0"><span class="nums">0</span></div>
               </div>
             </div>
           
@@ -265,6 +265,24 @@
         });
 
         });
+
+        $( ".keys" )
+  .click(function() {
+    var value = $( this ).attr("id");
+   var value2 = $( "#phoneNo" ).val();
+   if(value=='c'){
+    console.log(typeof(value2));
+    var str=value2
+    str= str.substring(0, str.length - 1);
+    $( "#phoneNo" ).val(str);
+   }
+   else if(value=='r'){
+    $( "#phoneNo" ).val('');
+   }
+   else{
+    $( "#phoneNo" ).val(value2+value);
+}
+  })
     </script>
  
 <link rel="stylesheet" href="/static/css/bootstrap.min.css">

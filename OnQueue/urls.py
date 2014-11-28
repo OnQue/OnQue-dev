@@ -9,6 +9,7 @@ v1_api.register(UserResource())
 v1_api.register(GuestResource())
 v1_api.register(TableResource())
 v1_api.register(RecordResource())
+handler404 = 'clients.views.handler404'
 
 urlpatterns = patterns('',
     # Examples:

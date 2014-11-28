@@ -762,6 +762,9 @@ def feedback(request, fid, feed_match):
 
 	return HttpResponseRedirect('/')
 
+def handler404(request):
+	return render(request,'404.html',status='404')
+
 
 	
 	
