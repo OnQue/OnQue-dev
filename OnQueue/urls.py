@@ -13,7 +13,7 @@ handler404 = 'clients.views.handler404'
 
 urlpatterns = patterns('',
     # Examples:
-    url(r'^$', 'clients.views.dashboard',),
+    url(r'^$', 'clients.views.index',),
     url(r'^test_view/$', 'clients.views.test_view',),
     url(r'^login/$', 'clients.views.login'),
     url(r'^logout/$', 'clients.views.logout'),

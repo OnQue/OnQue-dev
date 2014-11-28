@@ -39,6 +39,9 @@ def init_newuser_data(sender, **kwargs):
 	except MultipleObjectsReturned:
 		pass
 
+def index(request):
+	return render(request,'index.html')
+
 def test_view(request):
 	return render(request,'clients/test_multi.html')
 
@@ -256,7 +259,7 @@ def checkout(request):
 			print '============CHECKOUT ENDED================='
 			if a.split('/')[3]=='front':
 				return HttpResponseRedirect('/front/')
-			return HttpResponseRedirect('/')
+			return HttpResponseRedirect('/dashboard/')
 
 		return render(request,'clients/checkout.html')
 
@@ -461,7 +464,7 @@ def seated(request):
 			g.status = 2
 			signals.save_seated(request.user,guest_num,table_num)
 			g.save(update_fields=['current','table_no','status'])
-			return HttpResponseRedirect('/')
+			return HttpResponseRedirect('/dashboard/')
 			
 		waiting_list = utils.get_waiting_guests(request.user)
 		return render(request,'clients/seated.html',{'waiting_list':waiting_list})
@@ -761,7 +764,7 @@ def feedback(request, fid, feed_match):
 		# return render(request,'clients/feedback2.html')
 		print "Does not exist"
 
-	return HttpResponseRedirect('/')
+	return HttpResponseRedirect('/404/')
 
 def handler404(request):
 	return render(request,'404.html',status='404')
