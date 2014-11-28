@@ -14,7 +14,7 @@ class tableAdmin(admin.ModelAdmin):
     fields = ('rest_name','n_of_table','first_login')
 
 class FeedbackAdmin(admin.ModelAdmin):
-	list_display = ('user','mobile','date','service','ambience','food')
+	list_display = ('user','mobile','date','service','ambience','food','overall_exp','staff_friend')
 
 admin.site.register(Record,RecordAdmin)
 admin.site.register(table,tableAdmin)
