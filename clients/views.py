@@ -106,11 +106,16 @@ def firstLogin(request):
 				client.last_name = last_name
 				client.mobile = mobile
 				client.n_of_table = n_of_table
+				free = []
+				for i in range(1,n_of_table+1): 
+					free.append(i)
+				free.sort()
+				client.status = {'booked':[],'free':free}
 				client.email = email
 				client.city = city
 				client.rest_name = rest_name
 				client.first_login = False
-				client.save(update_fields=['first_login','rest_name','first_name','last_name','mobile','n_of_table','email','city'])
+				client.save(update_fields=['first_login','status','rest_name','first_name','last_name','mobile','n_of_table','email','city'])
 				user = auth.authenticate(username=request.user.username, password=password)
 				auth.login(request, user)
 				return HttpResponseRedirect('/dashboard/')
