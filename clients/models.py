@@ -56,6 +56,8 @@ class Feedback(models.Model):
     service = models.IntegerField(blank=True,null=True)
     ambience = models.IntegerField(blank=True,null=True)
     food = models.IntegerField(blank=True,null=True)
+    overall_exp = models.IntegerField(blank=True,null=True)
+    staff_friend = models.IntegerField(blank=True,null=True)
     record = models.ForeignKey(Record,null=True)
 
 

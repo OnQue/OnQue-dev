@@ -742,10 +742,9 @@ def feedback(request, fid, feed_match):
 		rating_sf = int(request.POST.get('rating_sf',''))
 		rating_ab = int(request.POST.get('rating_ab',''))
 		rating_oe = int(request.POST.get('rating_oe',''))
-		break
-		print message,service,food,ambience
+		print rating_qof,rating_qos,rating_sf,rating_ab, rating_oe
 		r=Record.objects.get(id=fid,feed_match=feed_match)
-		f=Feedback(record=r,user=r.user,mobile=r.mobile,date=utils.time_now(),service=service,ambience=ambience,food=food)
+		f=Feedback(record=r,user=r.user,mobile=r.mobile,date=utils.time_now(),service=rating_qos,ambience=rating_ab,food=rating_qof,staff_friend = rating_sf,overall_exp=rating_oe)
 		f.save()
 		utils.send_sms(r.mobile,'Thankyou for Filling the feedback form')
 		return HttpResponseRedirect('/')
