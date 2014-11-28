@@ -737,10 +737,12 @@ def feedback(request, fid, feed_match):
 	feed_match = int(feed_match)
 	if request.method == 'POST':
 		print "REACHED POST"
-		message = request.POST.get('message','')
-		service= int(request.POST.get('service',''))
-		food = int(request.POST.get('food',''))
-		ambience = int(request.POST.get('ambience',''))
+		rating_qof = request.POST.get('rating_qof','')
+		rating_qos= int(request.POST.get('rating_qos',''))
+		rating_sf = int(request.POST.get('rating_sf',''))
+		rating_ab = int(request.POST.get('rating_ab',''))
+		rating_oe = int(request.POST.get('rating_oe',''))
+		break
 		print message,service,food,ambience
 		r=Record.objects.get(id=fid,feed_match=feed_match)
 		f=Feedback(record=r,user=r.user,mobile=r.mobile,date=utils.time_now(),service=service,ambience=ambience,food=food)

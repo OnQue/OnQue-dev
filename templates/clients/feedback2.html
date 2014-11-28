@@ -22,8 +22,21 @@
     <link href="/static/css/style.css" rel="stylesheet">
     <link href="/static/css/style-responsive.css" rel="stylesheet">
     
-
+    <link href="/static/css/star-rating.css" media="all" rel="stylesheet" type="text/css" />
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/star-rating.js" type="text/javascript"></script>
     
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $("#restaurantratings input").rating({
+                showCaption: false
+
+            });
+
+        });
+      </script>
     
     
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -47,39 +60,35 @@
     </div> -->
     <form role="form" action="" method="post" >
       <input type='hidden' name='csrfmiddlewaretoken' value='{{ csrf_token }}' />
-      <div class="col-lg-6">
-        <div class="well well-sm"><strong><i class="glyphicon glyphicon-ok form-control-feedback"></i> Required Field</strong></div>
+                <div id="restaurantratings">
 
-        <div class="form-group">
-          <label for="service">Service</label>
-          <div class="input-group">
-            <input type="text" class="form-control" name="service" id="InputName" placeholder="Enter Number from 1 to 5" required>
-            <span class="input-group-addon"><i class="glyphicon glyphicon-ok form-control-feedback"></i></span></div>
-        </div>
-        <div class="form-group">
-          <label for="InputEmail">Ambience</label>
-          <div class="input-group">
-            <input type="text" class="form-control" id="InputEmail" name="ambience" placeholder="Enter number from 1 to 5" required  >
-            <span class="input-group-addon"><i class="glyphicon glyphicon-ok form-control-feedback"></i></span></div>
-        </div>
-        <div class="form-group">
-          <label for="InputEmail">Food</label>
-          <div class="input-group">
-            <input type="text" class="form-control" id="InputEmail" name="food" placeholder="Enter number from 1 to 5" required  >
-            <span class="input-group-addon"><i class="glyphicon glyphicon-ok form-control-feedback"></i></span></div>
-        </div>
-        <div class="form-group">
-          <label for="InputMessage">Other Notes</label>
-          <div class="input-group">
-            <textarea name="InputMessage" id="InputMessage" name="message" class="form-control" rows="5" ></textarea>
-            <span class="input-group-addon"><!-- <i class="glyphicon glyphicon-ok form-control-feedback"></i> --></span></div>
-        </div>
-        <div class="form-group">
-          <div class="col-sm-5 col-sm-offset-2">
-          <input type="submit" name="submit" id="submit" value="Submit" class="btn btn-info pull-right">
-          </div>
-        </div>
-      </div>
+                            <div class="row">
+                                <div class="col-sm-5"><h3>Quality of Food</h3></div>
+                                <div class="col-sm-7 "><input name="rating_qof" id="rating_qof" data-min="0" data-max="5" data-step="1">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-5"><h3>Quality of Service</h3></div>
+                                <div class="col-sm-7"><input name="rating_qos" id="rating_qos" data-min="0" data-max="5" data-step="1">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-5"><h3>Staff friendliness</h3></div>
+                                <div class="col-sm-7"><input name="rating_sf" id="rating_sf" data-min="0" data-max="5" data-step="1">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-5"><h3>Ambience</h3></div>
+                                <div class="col-sm-7"><input name="rating_ab" id="rating_ab" data-min="0" data-max="5" data-step="1">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-5"><h3>Overall Experience</h3></div>
+                                <div class="col-sm-7"><input name="rating_oe" id="rating_oe" data-min="0" data-max="5" data-step="1">
+                                </div>
+                            </div>
+
+                </div>
     </form>
     <!-- <hr class="featurette-divider hidden-lg"> -->
 <!--     <div class="col-lg-5 col-md-push-1">
