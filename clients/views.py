@@ -407,7 +407,6 @@ def adduser(request):
 				else:
 					g=Guest(mobile=mobile,created_at=utils.time_now(),start_time = utils.time_now(),status=1,current = request.user.username,waiting_time = waitingtime,name=name)
 					g.save()
-					utils.send_link_to_register(mobile,name)
 				##Add user to the waiting list
 				u=User.objects.get(username=request.user.username)
 				utils.update_waiting_list(u,g)
@@ -749,7 +748,7 @@ def feedback(request, fid, feed_match):
 		r=Record.objects.get(id=fid,feed_match=feed_match)
 		f=Feedback(record=r,user=r.user,mobile=r.mobile,date=utils.time_now(),service=rating_qos,ambience=rating_ab,food=rating_qof,staff_friend = rating_sf,overall_exp=rating_oe)
 		f.save()
-		utils.send_sms(r.mobile,'Thankyou for Filling the feedback form')
+		# utils.send_sms(r.mobile,'Thankyou for Filling the feedback form')
 		return HttpResponseRedirect('/')
 	try:
 		r=Record.objects.get(id=fid)

@@ -15,7 +15,7 @@ def save_waiting(user,mobile,waitingtime):
     record.save()
     pr = PersonalRecord(guest=guest,restuarant=rest_name,date=time_now())
     pr.save() 
-    message="Hello %s, Welcome to %s  your estimated waiting time is %s mins. You will be informed when your table is ready " %(guest.name,rest_name,str(waitingtime))
+    message="Hello, Welcome to %s  your estimated waiting time is %s mins. You will be informed when your table is ready " %(rest_name,str(waitingtime))
     send_sms(mobile,message)
 
 
@@ -47,7 +47,7 @@ def save_checkout(user,mobile,bill,flag=0):
         record.bill = bill
         record.save()
     feed_url = '%s/f/%d/%d' %(settings.HOST,record.id,record.feed_match)
-    message = "Thank you for visiting %s,your valuable feedback will be appreciated %s" %(record.rest_name,feed_url)
+    message = "Thank you for visiting %s,your valuable feedback will be appreciated\n%s" %(record.rest_name,feed_url)
     send_sms(mobile,message)
 
 def save_takeaway(user,mobile,date):
@@ -57,7 +57,7 @@ def save_takeaway(user,mobile,date):
     record = Record(user=user,rest_name=rest_name,date=date,mobile=mobile,age=guest.age,name=guest.name,take_away=True)
     record.save()
     feed_url = 'http://localhost:8000/f/%d/%d' %(record.id,record.feed_match)
-    message = "Thank you for visiting %s, your valuable feedback will be appreciated %s" %(record.rest_name,feed_url)
+    message = "Thank you for visiting %s,your valuable feedback will be appreciated\n%s" %(record.rest_name,feed_url)
     send_sms(mobile,message)
 
 def save_noshow(user,mobile):
