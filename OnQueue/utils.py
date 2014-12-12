@@ -88,6 +88,7 @@ def send_sms(number,message):
     response = 17011
     if settings.SEND_SMS:
         url = "http://login.bulksms360.in:8080/sendsms/bulksms?username=exp1-onquee&password=123456&type=0&dlr=1&destination=%s&source=ONQUEE&message=%s" %(number,message)
+        print url
         response = urllib2.urlopen(url)
         response = response.read().split('|')[0]
     return (response)

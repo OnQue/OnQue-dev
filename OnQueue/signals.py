@@ -56,7 +56,7 @@ def save_takeaway(user,mobile,date):
     rest_name = table.objects.get(user=user).rest_name
     record = Record(user=user,rest_name=rest_name,date=date,mobile=mobile,age=guest.age,name=guest.name,take_away=True)
     record.save()
-    feed_url = 'http://localhost:8000/f/%d/%d' %(record.id,record.feed_match)
+    feed_url = '%s/f/%d/%d' %(settings.HOST,record.id,record.feed_match)
     message = "Thank you for visiting %s,your valuable feedback will be appreciated\n%s" %(record.rest_name,feed_url)
     send_sms(mobile,message)
 
