@@ -541,7 +541,7 @@ def seatDirectly(request):
 			g=Guest(mobile=mobile,created_at=utils.time_now(),status=2,current = request.user.username,name=name,table_no = str(tables)[1:-1])
 			g.save()
 			signals.save_seated(request.user,mobile,tables,1)
-			utils.send_link_to_register(mobile,name)
+			# utils.send_link_to_register(mobile,name)
 	else:
 		return HttpResponseRedirect('/front/?error=%s' %'User already in waiting list or seated')
 
@@ -576,7 +576,7 @@ def takeAway(request):
 		print "Creating and Saving takeAway user", 
 		g=Guest(mobile=mobile,created_at=date,status=0,name=name,last_visited ={'restuarant':request.user.username,'date':date})
 		g.save()
-		utils.send_link_to_register(mobile,name)
+		# utils.send_link_to_register(mobile,name)
 	signals.save_takeaway(request.user,mobile,date)
 	print "============ENDING takeAway=============="
 	return HttpResponseRedirect('/front/')
