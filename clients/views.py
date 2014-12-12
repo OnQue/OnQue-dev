@@ -590,7 +590,7 @@ def noShow(request):
 			t=table.objects.get(user=request.user)
 			waiting = t.waiting_list['waiting_list']
 			if mobile not in waiting:
-				return HttpResponseRedirect('/front/?error=%d not i waiting list' %mobile)
+				return HttpResponseRedirect('/front/?error=%s not i waiting list' %mobile)
 			waiting.remove(mobile)
 			t.waiting_list = {'waiting_list':waiting}
 			g=Guest.objects.get(mobile=mobile)
