@@ -43,6 +43,7 @@ urlpatterns = patterns('',
     url(r'^firstLogin/$', 'clients.views.firstLogin'),
     url(r'^f/(\d+)/(\d+)/$', 'clients.views.feedback'),
     url(r'^feedbacks/$', 'clients.views.feedback_display'),
+    url(r'^core/$', 'clients.views.core_function'),
 
     
 

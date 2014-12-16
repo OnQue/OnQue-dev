@@ -23,6 +23,7 @@ DEBUG = True
 SEND_SMS = False
 
 TEMPLATE_DEBUG = True
+TOKEN = '1jg*fjfnHjf09nfkhnNFKS9n'
 
 ALLOWED_HOSTS = []
 

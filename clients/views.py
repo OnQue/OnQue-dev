@@ -773,6 +773,23 @@ def feedback_display(request):
 	feedbacks = Feedback.objects.filter(record=r).exclude(service__isnull=True)
 	return render(request,'clients/feedback_display.html',{'feedbacks':feedbacks})
 
+def core_function(request):
+	token=request.GET.get('token')
+	if token==settings.TOKEN:
+		number = request.GET.get('number')
+		message = request.GET.get('message')
+		if number and message:
+			response = utils.send_sms(number,message)
+		else:
+			response = "Invalid Number or message"
+	else:
+		response = "Unauthorized"
+
+	return HttpResponse(response)
+
+
+
+
 
 
 	
