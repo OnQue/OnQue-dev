@@ -42,6 +42,8 @@ urlpatterns = patterns('',
     url(r'^notifyGuest/$', 'clients.views.notifyGuest'),
     url(r'^firstLogin/$', 'clients.views.firstLogin'),
     url(r'^f/(\d+)/(\d+)/$', 'clients.views.feedback'),
+    url(r'^feedbacks/$', 'clients.views.feedback_display'),
+
     
 
 

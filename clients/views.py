@@ -768,6 +768,12 @@ def feedback(request, fid, feed_match):
 def handler404(request):
 	return render(request,'404.html',status='404')
 
+def feedback_display(request):
+	r = Record.objects.filter(user=request.user)
+	feedbacks = Feedback.objects.filter(record=r).exclude(service__isnull=True)
+	return render(request,'clients/feedback_display.html',{'feedbacks':feedbacks})
+
+
 
 	
 	
