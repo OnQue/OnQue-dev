@@ -1,5 +1,5 @@
 from guests.models import Guest
-from clients.models import table
+from clients.models import table, Record, Feedback
 import datetime
 from math import floor, ceil
 from twill.commands import *
@@ -146,6 +146,74 @@ def get_user_details(waiting_list):
 def user_to_client(user):
     t=table.objects.get(user=user)
     return t
+
+def get_total_visitors(u):
+    total = Record.objects.filter(user=u,date__startswith=datetime.date.today()).count()
+
+    return total
+
+def get_total_no_show(u):
+    total = Record.objects.filter(user=u,no_show=True,date__startswith=datetime.date.today()).count()
+
+    return total
+
+def get_feedback_stats(u):
+    dates = previous_days(7)
+    retVal=[]
+    for date in dates:
+        r = Feedback.objects.filter(user=u,date__startswith=date)
+        l=[]
+        for f in r:
+            l.append(float(f.service+f.ambience+f.overall_exp+f.food+f.staff_friend)/5)
+        element = {}
+        element['date']=str(date)
+        element['count']=0
+
+        if len(l)!= 0:   
+            element['count'] = round(sum(l)/len(l),2)
+        retVal.append(element)
+
+    print '====================Feedback Stats====================='
+    print retVal
+    return retVal
+
+def get_detail_feedback_stats(u):
+    dates = previous_days(7)
+    retVal = []
+    for date in dates:
+        r= Feedback.objects.filter(user=u,date__startswith=date)
+        service=[]
+        ambience=[]
+        overall_exp=[]
+        food=[]
+        staff_friend=[]
+        for f in r:
+            service.append(f.service)
+            ambience.append(f.ambience)
+            overall_exp.append(f.overall_exp)
+            food.append(f.food)
+            staff_friend.append(f.staff_friend)
+
+        element={}
+        element['date']=str(date)
+        element['service']=0
+        element['ambience']=0
+        element['overall_exp']=0
+        element['food']=0
+        element['staff_friend']=0
+        if len(service)!=0:
+            element['service']=round(sum(service)/len(service),2)
+            element['ambience']=round(sum(ambience)/len(ambience),2)
+            element['overall_exp']=round(sum(overall_exp)/len(overall_exp),2)
+            element['food']=round(sum(food)/len(food),2)
+            element['staff_friend']=round(sum(staff_friend)/len(staff_friend),2)
+            
+        retVal.append(element)
+
+    print retVal
+    return retVal
+
+        
 
 
 

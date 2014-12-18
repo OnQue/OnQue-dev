@@ -81,11 +81,11 @@ def login(request):
 
 	    else:
 	        # Show an error page
-	        return render(request,'clients/login.html',{'msg':_MSG_CODES['swg']})
+	        return render(request,'clients/adminpanel/login.html',{'msg':_MSG_CODES['swg']})
 
 	msg=request.GET.get('msg','')
 
-	return render(request, 'clients/login.html',{'msg':msg})
+	return render(request, 'clients/adminpanel/login.html',{'msg':msg})
 
 def firstLogin(request):
 	if  request.user.is_authenticated():
@@ -122,7 +122,7 @@ def firstLogin(request):
 				user = auth.authenticate(username=request.user.username, password=password)
 				auth.login(request, user)
 				return HttpResponseRedirect('/dashboard/')
-			return render(request,'clients/first_login.html')
+			return render(request,'clients/adminpanel/first_login.html')
 		else:
 			return HttpResponseRedirect('/dashboard/')
 
@@ -267,6 +267,7 @@ def checkout(request):
 
 def admin_settings(request):
 	if  request.user.is_authenticated():
+
 		if request.method == "POST":
 			ChangePassword = request.POST.get('ChangePassword','')
 			ChangeTables = request.POST.get('ChangeTables','')
@@ -322,7 +323,8 @@ def admin_settings(request):
 			# t.n_of_table = n
 			
 			return HttpResponseRedirect('/dashboard/')
-		return render(request, 'clients/admin_settings.html')
+		client = utils.user_to_client(request.user)
+		return render(request, 'clients/adminpanel/settings.html',{'client':client})
 		
 	return HttpResponseRedirect('/login?msg=%s' %_MSG_CODES['lap'])
 
@@ -334,11 +336,13 @@ def dashboard(request):
 		if client.first_login:
 			return HttpResponseRedirect('/firstLogin/')
 		n_of_tables = table.objects.get(user=request.user)
-		seated=utils.get_seated_guests(request.user)
-		waiting=utils.get_waiting_guests(request.user)
-		
+		seated=len(utils.get_seated_guests(request.user))
+		waiting=len(utils.get_waiting_guests(request.user))
+		total_guests = utils.get_total_visitors(request.user)
+		total_no_show = utils.get_total_no_show(request.user)
+		feed_stats=utils.get_feedback_stats(request.user)
 
-		return render(request,'clients/dashboard.html', {'client':client,'n_of_tables':n_of_tables.n_of_table,'status':n_of_tables.status,'seated':seated,'waiting':waiting})
+		return render(request,'clients/adminpanel/index.html', {'client':client,'n_of_tables':n_of_tables.n_of_table,'status':n_of_tables.status,'seated':seated,'waiting':waiting,'total_guests':total_guests,'total_no_show':total_no_show,'feed_stats':feed_stats})
 	else:
 		return HttpResponseRedirect('/login?msg=%s' %_MSG_CODES['lap'])
 		
@@ -612,25 +616,32 @@ def noShow(request):
 def analytics(request):
 	dates=utils.previous_days(5)
 	records_converted=[]
-	for date in dates:
-		element = {}
-		element['year'] = str(date)
-		element['value'] = Record.objects.filter(user=request.user,conversion=True,date__startswith=date).count()
-		records_converted.append(element)
-	print "============================"
-	for i in records_converted:
-		print i
-	print "============================"
+	# for date in dates:
+	# 	element = {}
+	# 	element['year'] = str(date)
+	# 	element['value'] = Record.objects.filter(user=request.user,conversion=True,date__startswith=date).count()
+	# 	records_converted.append(element)
+	# print "============================"
+	# for i in records_converted:
+	# 	print i
+	# print "============================"
+	client = utils.user_to_client(request.user)
+
+	count={}
+	count['no_show']=Record.objects.filter(user=request.user,no_show=True).count()
+	count['take_away']=Record.objects.filter(user=request.user,take_away=True).count()
+	count['conversion']=Record.objects.filter(user=request.user,conversion=True).count()
 
 	
 
-	return render(request,'clients/analytics.html',{'records_converted':records_converted})
+	return render(request,'clients/adminpanel/charts/morris.html',{'records_converted':records_converted,'client':client,'count':count})
 	
 
 def ShowRecords(request):
 	records_converted = Record.objects.filter(user=request.user,conversion=True)
 	records_total = Record.objects.filter(user=request.user)
-	return render(request,"clients/records.html",{'records_converted':records_converted,'records_total':records_total})
+	client = utils.user_to_client(request.user)
+	return render(request,"clients/adminpanel/tables/data.html",{'records_converted':records_converted,'records_total':records_total,'client':client})
 
 def JSON_records(request):
 	'''
@@ -661,6 +672,17 @@ def JSON_records(request):
 		#--- end total records
 
 		records['records_total'] = records_total
+
+		#---Start Donut data
+		for date in dates:
+			element={}
+
+		#---Start Feedback stats
+		records['feed_stats']=utils.get_feedback_stats(request.user)
+
+		#--Start Detail feed stats
+		records['detail_feed_stats']=utils.get_detail_feedback_stats(request.user)
+
 	return HttpResponse(json.dumps(records), content_type="application/json")
 
 
@@ -771,7 +793,7 @@ def handler404(request):
 def feedback_display(request):
 	r = Record.objects.filter(user=request.user)
 	feedbacks = Feedback.objects.filter(record=r).exclude(service__isnull=True)
-	return render(request,'clients/feedback_display.html',{'feedbacks':feedbacks})
+	return render(request,'clients/adminpanel/tables/feedback_display.html',{'feedbacks':feedbacks})
 
 def core_function(request):
 	token=request.GET.get('token')
@@ -786,6 +808,9 @@ def core_function(request):
 		response = "Unauthorized"
 
 	return HttpResponse(response)
+
+def dev(request):
+	return render(request,'clients/adminpanel/base.html')
 
 
 
