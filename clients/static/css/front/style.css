@@ -1,0 +1,423 @@
+body{
+	height: 690px;
+	overflow-y: hidden;
+}
+.container{
+	width: 100%;
+	background-color: orange;
+	position: fixed;
+}
+.leftpanel{
+	float:left;
+	width: 40%;
+	min-height: 680px;
+	color: #FFFFFF;
+	box-shadow: 3px 3px 5px 6px #ccc;
+	background: -webkit-linear-gradient(left top, #3E6187 ,#43607D); /* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(bottom right, #3E6187, #43607D); /* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(bottom right, #3E6187, #43607D); /* For Firefox 3.6 to 15 */
+	background: linear-gradient(to bottom right, #3E6187, #43607D); /* Standard syntax */
+	
+}
+.rightpanel{
+	min-height: 680px;
+	float:right;
+	background-color: #F5F5F5;
+	width: 60%;
+	box-shadow: inset 12px 0px 15px #ccc;
+}
+
+#panelHeader{
+	width: 490px;
+	height: 55px;
+	background-color: #FFFFFF;
+	margin: 20px auto;
+	right:50px; 
+	display: block;
+	box-shadow: 12px 12px 15px #ccc;
+}
+
+.panelHeadings{
+	width: 160px;
+	
+	height:100%;
+	display: inline-block;
+	position: relative;
+}
+
+.panelHeadings div{
+	margin-top: 20px;
+	margin-left: 45px;
+	height: 20px;
+	width: 190px;
+	font-weight: bold;
+	color: #7c7575;
+}
+
+#clientList{
+	margin:10px auto;
+	overflow-y:scroll; 
+	width: 600px;
+	height: 550px;
+}
+
+#checkoutArea{
+	width: 80%;
+	height: 100px;
+	background-color: #FFFFFF;
+	color: #000;
+	margin-left: 10%;
+	border-radius: 4px;
+}
+
+#checkoutdiv{
+	width: 80%;
+	height: 30px;
+	margin-left: 10%;
+}
+
+.waitingTime{
+	color: rgb(255, 67, 67);
+	font-weight: bold;
+}
+.quotedTime{
+	color: rgb(34, 142, 34);
+	font-weight: bold;
+}
+
+
+#checkout{
+	background-color: #4E738F;
+	height: 30px;
+	border-radius: 2px;
+	border: 0;
+	color: #FFFFFF;
+	font-weight:bold;
+	width: 100px;
+	font-size: 13px;
+}
+
+
+#image1{
+	width: 100%;
+	height: 200px;
+}
+.Notes{
+	background-color: rgba(27, 60, 92, 0.51);
+	width: 100%;
+}
+.Notes2{
+	background-color: rgba(27, 60, 92, 0.51);
+	width: 60%;
+}
+
+.form{
+	width: 80%;
+	margin: 45px auto;
+}
+.form-control{
+	margin-top: 10px;
+	clear: both;
+}
+.form-control2{
+	margin-top: 20px;
+	width: 40%;
+	float: left;
+}
+.form-control3{
+	margin-top: 20px;
+	width: 50%;
+	float: left;
+}
+
+.input1{
+	outline: none;
+	background: none;
+	border-left: 0px;
+	border-right: 0px;
+	border-top: 0px;
+	border-bottom: 1px solid #FFFFFF;
+	height: 20px;
+	width: 82%;
+}
+.input3{
+	outline: none;
+	background: none;
+	border:none;
+	height: 20px;
+	max-width: 20px;
+}
+
+select{
+	outline: none;
+	background-color: transparent;
+	height: 20px;
+	color: #FFFFFF;
+	width:40px;
+	border-radius: 2px;
+}
+
+.primaryBtn{
+	height: 30px;
+	border-radius: 2px;
+	border: 0;
+	color: #FFFFFF;
+	font-weight:bold;
+	width: 32%;
+	font-size: 13px;
+}
+
+#doneSeating{
+	height: 30px;
+	border-radius: 2px;
+	border: 0;
+	color: #FFFFFF;
+	font-weight:bold;
+	width: 32%;
+	font-size: 14px;
+	background-color: #44D1E3;
+}
+
+.sizeAdjust{
+	width: 21px;
+	border-radius: 10px;
+	border: 0;
+	color: #FFFFFF;
+	font-weight:bold;
+	background-color: #44D1E3;
+}
+
+
+#seating{
+	background-color: #44D1E3;
+}
+
+.allot{
+	height: 40px;
+	border-radius: 2px;
+	border: 0;
+	color: #FFFFFF;
+	font-weight:bold;
+	width: 100px;
+	font-size: 20px;
+	background-color: #44D1E3;
+}
+.close{
+margin-right: 0px;
+height: 32px;
+float: right;
+border-radius: 2px;
+border: 0;
+color: #FFFFFF;
+padding-top: 8px;
+padding-left: 8px;
+padding-right: 8px;
+font-size: 20px;
+font-weight: bold;
+text-decoration: none;
+font-family: sans-serif;
+	background-color: #CB2323;
+	margin-right: 5px;
+}
+
+#waiting{
+	background-color: #FBE74B;
+	
+}
+
+#takeaway{
+	background-color: #7A91FF;
+}
+
+#waiting-btn{
+	cursor: pointer;
+}
+#seating-btn{
+	cursor: pointer;
+}
+#takeAway-btn{
+	cursor: pointer;
+}
+
+.usersBox{
+	width:550px;
+	height:80px;
+	margin: 5px auto;
+	background-color: #FFFFFF;
+}
+
+.partySize{
+	width: 57px;
+	height: 50px;
+	float: left;
+	color: #FBE74B;
+	border: 1px solid #FBE74B;
+	border-radius: 3px;
+	margin: 15px;
+	display: inline-block;
+	text-align: center;
+	font-size: 12px;
+	font-weight: bold;
+	padding-bottom: 2px;
+}
+
+.partyNo{
+	color: #FBE74B;
+	font-size: 31px;
+	font-weight: bold;
+}
+
+.infoBox{
+	height:100%;
+	display: inline-block;
+	font-size: 14px;
+	padding-top: 11px;
+
+}
+
+.infoBox3{
+	height:100%;
+	display: inline-block;
+	font-size: 14px;
+	padding-top: 20px;
+
+}
+
+.optionsBox{
+	height: 30px;
+	float: right;
+	display: inline-block;
+	margin: auto;
+	margin-top: 25px;
+	border-right: 6px solid #FFFFFF;
+}
+
+.options{
+	display: inline-block;
+	margin-right: 0px;
+	height: 24px;
+	background-color: #FBE74B;
+	border-radius: 2px;
+	border: 0;
+	color: #FFFFFF;
+	padding-top: 8px;
+	padding-left: 8px;
+	padding-right: 8px;
+	font-size: 12px;
+	font-weight: bold;
+	text-decoration: none;
+	font-family: sans-serif;
+}
+.options:hover{
+	cursor: pointer;
+}
+.clientName{
+	color: #426181;
+	font-size: 15px;
+}
+.clientMobile{
+	color: #ADA8A8;
+	font-size: 13px;
+}
+
+.clientWaitingTime{
+	color:#ADA8A8;
+	font-size: 11px;
+}
+.modal{
+	width: 50%;
+	height:500px;
+	background-color: #F5F5F5;
+	position: fixed;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	z-index: 99999;
+	opacity:0;
+	-webkit-transition: opacity 400ms ease-in;
+	-moz-transition: opacity 400ms ease-in;
+	transition: opacity 400ms ease-in;
+	pointer-events: none;
+	margin: auto;
+	background-color: #F5F5F5;
+}
+
+.modal_box{
+	border-radius: 10px;
+}
+
+.modal:target {
+	opacity:1;
+	pointer-events: auto;
+
+}
+.modal_heading{
+	height: 50px;
+font-size: 30px;
+font-weight: bold;
+background-color: #416080;
+color: white;
+text-align: center;
+padding-top: 10px;
+border-bottom: 2px solid yellow;
+}
+.modal_body{
+	clear: both;
+	background-color: rgb(231, 210, 50);
+	overflow-y:scroll ;
+	min-height: 350px;
+	width: 90%;
+	margin: 20px auto;
+
+}
+.modal_footer{
+	height: 50px;
+font-size: 43px;
+font-weight: bold;
+text-align: center;
+border-top: 2px solid yellow;
+}
+.table{
+	display: inline-block;
+height: 40px;
+width: 41px;
+padding: 7px;
+background-color: #4162FF;
+color: white;
+border-radius: 30px;
+font-size: 35px;
+font-weight: bold;
+margin-top: 10px;
+margin-left: 5px;
+}
+
+#sCheck{
+	font-size:16px;
+	display: none;
+	margin-right: 4px;
+}
+#wCheck{
+	font-size:16px;
+	margin-right: 4px;
+}
+#tCheck{
+	font-size:16px;
+	display: none;
+	margin-right: 4px;
+}
+.profileTable{
+	margin-top: 20px;
+font-size: 20px;
+margin-left: 68px;
+font-weight: bold;
+	width: 80%;
+}
+.proData1{
+	width: 40%;
+	height: 40px
+}
+.proData2{
+	width: 60%;
+	height: 40px
+}

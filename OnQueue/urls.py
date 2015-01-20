@@ -45,6 +45,7 @@ urlpatterns = patterns('',
     url(r'^feedbacks/$', 'clients.views.feedback_display'),
     url(r'^core/$', 'clients.views.core_function'),
     url(r'^dev/$', 'clients.views.dev'),
+    url(r'^getWaiting/$', 'clients.views.get_waiting'),
 
     
 

@@ -16,6 +16,7 @@ import datetime
 import urllib2
 from django.conf import settings
 import requests
+from django.views.decorators.csrf import csrf_exempt
 
 
 
@@ -381,7 +382,9 @@ def add(request):
 	else:
 		return HttpResponseRedirect('/login?msg=%s' %_MSG_CODES['lap'])
 
+@csrf_exempt
 def adduser(request):
+	print "reached"
 	error = []
 	if  request.user.is_authenticated():
 		if request.method == 'POST':
@@ -391,6 +394,10 @@ def adduser(request):
 			takeaway = request.POST.get('takeaway', '')
 			if takeaway: #Visitor came for takeaway
 				return takeAway(request)
+			waiting = request.POST.get('waiting')
+			if waiting:
+				print "EXISTS"
+			return HttpResponseRedirect('/front/')
 			mobile = request.POST.get('mobile', '')
 			name = request.POST.get('name', '')
 			waitingtime = request.POST.get('waitingtime', '')
@@ -715,11 +722,12 @@ def front(request):
 		# r = requests.get('http://localhost:8001/api/v1/table/onque/?format=json')
 		# waiting_list = r.json()
 
-		print response
+		print response,"RESPONSE"
 		waiting_list = json.load(response)
 		users = utils.get_user_details(waiting_list['waiting_list'])
 		parties_waiting = len(users)
 		
+		# print parties_waiting,"================================"
 		#--table checkout starts
 		t = table.objects.get(user=request.user)
 		client = t
@@ -811,6 +819,19 @@ def core_function(request):
 
 def dev(request):
 	return render(request,'clients/adminpanel/base.html')
+
+def get_waiting(request):
+	url = '%s/api/v1/table/%s/?format=json' %(settings.HOST,request.user.username)
+	# print url
+	# response = '{"city": "Lucknow", "email": "vikasmishra95@gmail.com", "first_login": "false", "first_name": "Vikas", "last_name": "Mishra", "mobile": "234", "n_of_table": 13, "resource_uri": "/api/v1/table/onque/", "rest_name": "Fake", "seated": "{useated": []}", "status": "{u"booked": [], u"free": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}", "user": "/api/v1/user/onque/", "username": "onque", "waiting_list": "{u"waiting_list": []}"}'
+	response = urllib2.urlopen(url) 
+	# r = requests.get('http://localhost:8001/api/v1/table/onque/?format=json')
+	# waiting_list = r.json()
+
+	
+	waiting_list = json.load(response)
+	users = utils.get_user_details(waiting_list['waiting_list'])
+	return HttpResponse(json.dumps(users), content_type="application/json")
 
 
 

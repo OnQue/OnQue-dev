@@ -129,8 +129,9 @@ def get_user_details(waiting_list):
     if len(l)>=1 and l[0]!='':
         for num in l:
             user = {}
-            print str((num[2:-1])),"VIKAS"
-            g=Guest.objects.get(mobile=num[2:-1])
+            print "num=",num,"==============="
+            print num.split("'")[1],"VIKAS"
+            g=Guest.objects.get(mobile=num.split("'")[1])
             user['name'] = g.name
             user['mobile'] = g.mobile
             user['age'] = g.age
