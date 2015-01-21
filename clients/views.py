@@ -382,9 +382,8 @@ def add(request):
 	else:
 		return HttpResponseRedirect('/login?msg=%s' %_MSG_CODES['lap'])
 
-@csrf_exempt
-def adduser(request):
-	print "reached"
+
+def addWaitinguser2(request):
 	error = []
 	if  request.user.is_authenticated():
 		if request.method == 'POST':
@@ -394,10 +393,6 @@ def adduser(request):
 			takeaway = request.POST.get('takeaway', '')
 			if takeaway: #Visitor came for takeaway
 				return takeAway(request)
-			waiting = request.POST.get('waiting')
-			if waiting:
-				print "EXISTS"
-			return HttpResponseRedirect('/front/')
 			mobile = request.POST.get('mobile', '')
 			name = request.POST.get('name', '')
 			waitingtime = request.POST.get('waitingtime', '')
@@ -440,6 +435,37 @@ def adduser(request):
 	else:
 		return HttpResponseRedirect('/login?msg=%s' %_MSG_CODES['lap'])
 
+@csrf_exempt
+def adduser(request):
+	print "reached"
+	error = []
+	if request.method == 'POST':
+		a=json.loads(request.body)
+		mobile = a.get('mobile', '93214567561')
+		name =  a.get('name', 'lol')
+		waitingtime = a.get('waitingtime', '12')
+		partysize = a.get('partysize', '5')
+
+		print mobile,name,waitingtime,partysize,"-------------->>>>>>>"
+		if utils.guest_exists(mobile):
+			g= Guest.objects.get(mobile=mobile)
+			g.waiting_time = waitingtime
+			g.start_time = utils.time_now()
+			g.status = 1  #Waiting list
+			g.current = request.user.username
+			g.save(update_fields=['waiting_time','start_time','status','current'])
+			print "helo"
+		else:
+			g=Guest(mobile=mobile,created_at=utils.time_now(),start_time = utils.time_now(),status=1,current = request.user.username,waiting_time = waitingtime,name=name)
+			g.save()
+			print "updated"
+
+		u=User.objects.get(username=request.user.username)
+		utils.update_waiting_list(u,g)
+		signals.save_waiting(request.user,mobile,waitingtime)
+
+	return HttpResponse("Done")
+
 
 
 def countdown(request):
@@ -481,6 +507,7 @@ def seated(request):
 
 	return HttpResponseRedirect('/login?msg=%s' %_MSG_CODES['lap'])
 
+@csrf_exempt
 def seatUser(request):
 	if  request.user.is_authenticated():
 		if request.method == 'POST':
@@ -573,11 +600,14 @@ def seatDirectly(request):
 	print "===============FINISHED seatDirectly================="
 	return HttpResponseRedirect('/front/')
 
+@csrf_exempt
 def takeAway(request):
 	print "============Reached takeAway=============="
-	mobile = request.POST.get('mobile', '')
-	name = request.POST.get('name', '')
+	req=json.loads(request.body)
+	mobile = req.get('mobile', '')
+	name = req.get('name', '')
 	date = utils.time_now()
+	print name,mobile,date
 	if utils.guest_exists(mobile):
 		g = Guest.objects.get(mobile=mobile)
 		g.last_visited ={'restuarant':request.user.username,'date':date}
@@ -590,7 +620,7 @@ def takeAway(request):
 		# utils.send_link_to_register(mobile,name)
 	signals.save_takeaway(request.user,mobile,date)
 	print "============ENDING takeAway=============="
-	return HttpResponseRedirect('/front/')
+	return HttpResponse('Done')
 
 def noShow(request):
 	print "===========REACHED noShow===================="
@@ -834,8 +864,29 @@ def get_waiting(request):
 	return HttpResponse(json.dumps(users), content_type="application/json")
 
 
+def get_takeaway(request):
+	# url = '%s/api/v1/table/%s/?format=json' %(settings.HOST,request.user.username)
+	# # print url
+	# # response = '{"city": "Lucknow", "email": "vikasmishra95@gmail.com", "first_login": "false", "first_name": "Vikas", "last_name": "Mishra", "mobile": "234", "n_of_table": 13, "resource_uri": "/api/v1/table/onque/", "rest_name": "Fake", "seated": "{useated": []}", "status": "{u"booked": [], u"free": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}", "user": "/api/v1/user/onque/", "username": "onque", "waiting_list": "{u"waiting_list": []}"}'
+	# response = urllib2.urlopen(url) 
+	# # r = requests.get('http://localhost:8001/api/v1/table/onque/?format=json')
+	# # waiting_list = r.json()
 
+	
+	# takeaway_list = json.load(response)
+	# users = utils.get_user_details(takeaway_list['takeaway_list'])
+	# return HttpResponse(json.dumps(users), content_type="application/json")
+	url = '%s/api/v1/table/%s/?format=json' %(settings.HOST,request.user.username)
+	# print url
+	# response = '{"city": "Lucknow", "email": "vikasmishra95@gmail.com", "first_login": "false", "first_name": "Vikas", "last_name": "Mishra", "mobile": "234", "n_of_table": 13, "resource_uri": "/api/v1/table/onque/", "rest_name": "Fake", "seated": "{useated": []}", "status": "{u"booked": [], u"free": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}", "user": "/api/v1/user/onque/", "username": "onque", "waiting_list": "{u"waiting_list": []}"}'
+	response = urllib2.urlopen(url) 
+	# r = requests.get('http://localhost:8001/api/v1/table/onque/?format=json')
+	# waiting_list = r.json()
 
+	
+	waiting_list = json.load(response)
+	users = utils.get_user_details(waiting_list['waiting_list'])
+	return HttpResponse(json.dumps(users), content_type="application/json")
 
 
 	

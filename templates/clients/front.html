@@ -47,7 +47,6 @@
 
 						<div id="waitingForm">
 						<form>
-							<input type='hidden' name='csrfmiddlewaretoken' value='{{ csrf_token }}' />
 							<div class="form-control">
 								<label>Name:</label>
 								<input class="input1" type="text" placeholder="" ng-model="app.waitingClient.name">
@@ -82,7 +81,6 @@
 
 						<div id="takeAwayForm" style="display:none">
 						<form>
-							<input type='hidden' name='csrfmiddlewaretoken' value='{{ csrf_token }}' />
 							<div class="form-control">
 								<label>Name:</label>
 								<input class="input1" type="text" placeholder="" ng-model="app.takeAwayClient.name">
@@ -124,10 +122,12 @@
 					<div class="panelHeadings" id="takeAway-btn"><div>Take Away</div></div>
 				</div>
 			<!-- ng-repeat starts here-->
+
 				<div id="clientList">
 
-
+					{% verbatim %}
 					<div id="waitList">
+						
 						<div  class="usersBox" ng-repeat="waitingClient in app.waitingClients">
 							<div class="partySize">
 									<span class="partyNo">{{waitingClient.tablesReqd}}</span><br>
@@ -221,7 +221,8 @@
 							</div>
 
 
-						</div>			
+						</div>
+
 					</div>
 
 
@@ -399,7 +400,7 @@
 
 
 				</div>
-
+				{% endverbatim %}	
 			</div>
 		</div>
 

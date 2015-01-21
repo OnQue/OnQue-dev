@@ -46,7 +46,8 @@ urlpatterns = patterns('',
     url(r'^core/$', 'clients.views.core_function'),
     url(r'^dev/$', 'clients.views.dev'),
     url(r'^getWaiting/$', 'clients.views.get_waiting'),
-
+    url(r'^takeaway/$', 'clients.views.takeAway'),
+    url(r'^getTakeaway/$', 'clients.views.get_takeaway'),
     
 
 

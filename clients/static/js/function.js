@@ -37,26 +37,18 @@ app.controller("AppCtrl", function($http) {
     }
 
 
-    addSeatingClientUrl="data/writedata.json";
+    addSeatingClientUrl="";
     removeSeatingClientsUrl="";
-    seatingClientsUrl="data/data2.txt";
+    seatingClientsUrl="";
 
 
 
-    $http.get(seatingClientsUrl)
+    $http.get(waitingClientsUrl)
       .success(function(data) {
         app.seatingClients = data;
       })
 
-    app.addWaitingClient1 = function(client) {
-        alert("yo");
-        alert(seatingClient.name);
-        $http.post(addSeatingClientUrl, SeatingClient)
-          .success(function(data) {
-            app.seatingClients = data;
-            console.log(data);
-          })
-    }
+   
     app.addSeatingClient = function(client) {
         $http.get(addSeatingClientUrl)
           .success(function(data) {
@@ -73,9 +65,9 @@ app.controller("AppCtrl", function($http) {
     }
 
 
-    addTakeAwayClientUrl="data/writedata.json";
+    addTakeAwayClientUrl="/takeaway/";
     removeTakeAwayClientsUrl="";
-    takeAwayClientsUrl="data/data3.txt";
+    takeAwayClientsUrl="/getTakeaway/";
 
 
 
@@ -84,22 +76,20 @@ app.controller("AppCtrl", function($http) {
         app.takeAwayClients = data;
       })
 
-    app.addTakeAwayClient1 = function(client) {
-        alert("yo");
-        alert(TakeAwayClient.name);
-        $http.post(addTakeAwayClientUrl, TakeAwayClient)
+    
+    app.addTakeAwayClient = function(takeAwayClient) {
+        $http.post(addTakeAwayClientUrl, takeAwayClient)
           .success(function(data) {
-            app.takeAwayClients = data;
+            app.waitingClients = data;
+            console.log(data);
+          })
+        $http.get(waitingClientsUrl)
+          .success(function(data) {
+            app.waitingClients = data;
             console.log(data);
           })
     }
-    app.addTakeAwayClient = function(client) {
-        $http.get(addTakeAwayClientUrl)
-          .success(function(data) {
-            app.takeAwayClients = data;
-            console.log(data);
-          })
-    }
+
     app.removeSeatingClient= function(client) {
         console.log(client);
         $http.post(removeTakeAwayClientUrl, TakeAwayClient)
@@ -113,7 +103,7 @@ app.controller("AppCtrl", function($http) {
 
 
 
-    addTableUrl="data/addTable.json";
+    addTableUrl="n";
     removeTableUrl="data/removeTable.json";
     tablesUrl="data/tabledata.json";
 
